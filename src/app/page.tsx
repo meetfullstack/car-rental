@@ -6,6 +6,7 @@ import SearchWidget from "@/components/SearchWidget";
 import Reveal from "@/components/Reveal";
 import HeroVideo from "@/components/HeroVideo";
 import Counter from "@/components/Counter";
+import CategoryCard from "@/components/CategoryCard";
 
 const stats = [
   { label: "Vehicles in fleet", value: "1,200+" },
@@ -135,12 +136,7 @@ export default async function Home() {
           <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
             {categories.map((category, i) => (
               <Reveal key={category} delay={i * 0.05}>
-                <Link
-                  href={`/fleet?category=${category}`}
-                  className="card-surface flex h-28 flex-col items-center justify-center gap-2 rounded-xl transition-all hover:-translate-y-1 hover:border-accent/50"
-                >
-                  <span className="font-display text-sm font-medium">{category}</span>
-                </Link>
+                <CategoryCard category={category} />
               </Reveal>
             ))}
           </div>
