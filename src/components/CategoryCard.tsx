@@ -17,7 +17,8 @@ export default function CategoryCard({ category }: { category: string }) {
         src={`/categories/${category.toLowerCase()}.jpg`}
         alt=""
         fill
-        sizes="(min-width: 1024px) 16vw, (min-width: 640px) 33vw, 50vw"
+        sizes="(min-width: 1024px) 34vw, (min-width: 640px) 34vw, 50vw"
+        quality={90}
         className="object-cover"
       />
       <div
