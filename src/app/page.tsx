@@ -4,6 +4,7 @@ import { getFeaturedCars, categories } from "@/lib/cars";
 import CarCard from "@/components/CarCard";
 import SearchWidget from "@/components/SearchWidget";
 import Reveal from "@/components/Reveal";
+import HeroVideo from "@/components/HeroVideo";
 
 const stats = [
   { label: "Vehicles in fleet", value: "1,200+" },
@@ -55,13 +56,7 @@ export default async function Home() {
     <div>
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(60% 50% at 50% 0%, rgba(225,29,46,0.16) 0%, transparent 60%)",
-          }}
-        />
+        <HeroVideo />
         <div className="relative mx-auto max-w-7xl px-6 pb-20 pt-20 sm:pt-28">
           <Reveal className="mx-auto max-w-3xl text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-1.5 text-xs text-muted">
