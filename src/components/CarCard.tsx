@@ -8,13 +8,13 @@ import { formatCurrency } from "@/lib/utils";
 import { useHoverScale } from "@/lib/useHoverScale";
 
 export default function CarCard({ car }: { car: Car }) {
-  const ref = useHoverScale<HTMLAnchorElement>(1.02);
+  const ref = useHoverScale<HTMLAnchorElement>(1.04);
 
   return (
     <Link
       ref={ref}
       href={`/fleet/${car.id}`}
-      className="group card-surface flex flex-col overflow-hidden rounded-2xl hover:border-chrome/40"
+      className="group card-surface flex flex-col overflow-hidden rounded-2xl transition-shadow duration-300 hover:border-chrome/40 hover:shadow-xl"
     >
       <div className="relative h-44 overflow-hidden">
         <span className="absolute left-4 top-4 z-10 rounded-full bg-white px-3 py-1 text-xs font-semibold text-black shadow-sm">
@@ -26,7 +26,7 @@ export default function CarCard({ car }: { car: Car }) {
           fill
           sizes="(min-width: 1024px) 420px, (min-width: 640px) 50vw, 90vw"
           quality={100}
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className="object-cover"
         />
       </div>
 
