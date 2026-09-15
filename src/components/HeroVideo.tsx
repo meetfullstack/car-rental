@@ -38,8 +38,12 @@ export default function HeroVideo() {
       <div
         className="absolute inset-0"
         style={{
+          // The transition to var(--background) needs real vertical room —
+          // compressing it into a small % at the bottom reads as a hard
+          // edge no matter how many color stops lead into it, especially
+          // in light mode where the target color is far from the tint.
           background:
-            "linear-gradient(180deg, rgba(8,9,11,0.45) 0%, rgba(8,9,11,0.55) 70%, rgba(8,9,11,0.75) 88%, var(--background) 100%)",
+            "linear-gradient(180deg, rgba(8,9,11,0.45) 0%, rgba(8,9,11,0.48) 35%, rgba(8,9,11,0.55) 55%, var(--background) 100%)",
         }}
       />
     </div>
