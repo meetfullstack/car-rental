@@ -1,14 +1,20 @@
+"use client";
+
 import Link from "next/link";
 import { Star, Users, Briefcase, Gauge } from "lucide-react";
 import { Car } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
+import { useHoverScale } from "@/lib/useHoverScale";
 import CarVisual from "./CarVisual";
 
 export default function CarCard({ car }: { car: Car }) {
+  const ref = useHoverScale<HTMLAnchorElement>(1.02);
+
   return (
     <Link
+      ref={ref}
       href={`/fleet/${car.id}`}
-      className="group card-surface flex flex-col overflow-hidden rounded-2xl transition-all hover:-translate-y-1 hover:border-chrome/40"
+      className="group card-surface flex flex-col overflow-hidden rounded-2xl hover:border-chrome/40"
     >
       <div
         className="relative flex items-center justify-center overflow-hidden px-6 pt-8"

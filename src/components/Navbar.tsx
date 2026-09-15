@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Menu, X, Zap, User } from "lucide-react";
 import { useBooking } from "@/lib/booking-context";
+import { useHoverScale } from "@/lib/useHoverScale";
 
 const links = [
   { href: "/fleet", label: "Fleet" },
@@ -43,6 +44,7 @@ export default function Navbar() {
   const { user } = useBooking();
   const { resolvedTheme } = useTheme();
   const [overHero, setOverHero] = useState(true);
+  const bookNowRef = useHoverScale<HTMLAnchorElement>(1.06);
 
   const mounted = useSyncExternalStore(
     () => () => {},
@@ -159,6 +161,7 @@ export default function Navbar() {
             </Link>
           )}
           <Link
+            ref={bookNowRef}
             href="/fleet"
             className="rounded-full bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
           >

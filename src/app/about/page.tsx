@@ -1,5 +1,6 @@
 import { Target, Heart, Globe } from "lucide-react";
 import Reveal from "@/components/Reveal";
+import Counter from "@/components/Counter";
 
 export const metadata = { title: "About — Velocity" };
 
@@ -60,7 +61,9 @@ export default function AboutPage() {
           ].map(([value, label]) => (
             <div key={label}>
               <dt className="sr-only">{label}</dt>
-              <dd className="font-display text-2xl font-semibold">{value}</dd>
+              <dd className="font-display text-2xl font-semibold">
+                {label === "Founded" ? value : <Counter value={value} />}
+              </dd>
               <p className="mt-1 text-xs text-muted">{label}</p>
             </div>
           ))}

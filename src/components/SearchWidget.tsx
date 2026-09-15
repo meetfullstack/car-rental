@@ -6,10 +6,12 @@ import { MapPin, Calendar, Search } from "lucide-react";
 import { locations } from "@/lib/cars";
 import { useBooking } from "@/lib/booking-context";
 import { todayIso, addDaysIso } from "@/lib/utils";
+import { useHoverScale } from "@/lib/useHoverScale";
 
 export default function SearchWidget() {
   const router = useRouter();
   const { draft, setDraft } = useBooking();
+  const searchRef = useHoverScale<HTMLButtonElement>(1.05);
   const [pickup, setPickup] = useState(draft.pickupLocation || "Los Angeles");
   const [pickupDate, setPickupDate] = useState(draft.pickupDate || todayIso());
   const [dropoffDate, setDropoffDate] = useState(
@@ -72,6 +74,7 @@ export default function SearchWidget() {
       </label>
 
       <button
+        ref={searchRef}
         onClick={handleSearch}
         className="flex items-center justify-center gap-2 rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
       >

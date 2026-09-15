@@ -5,6 +5,7 @@ import CarCard from "@/components/CarCard";
 import SearchWidget from "@/components/SearchWidget";
 import Reveal from "@/components/Reveal";
 import HeroVideo from "@/components/HeroVideo";
+import Counter from "@/components/Counter";
 
 const stats = [
   { label: "Vehicles in fleet", value: "1,200+" },
@@ -86,7 +87,7 @@ export default async function Home() {
                 <div key={stat.label} className="text-center">
                   <dt className="sr-only">{stat.label}</dt>
                   <dd className="font-display text-2xl font-semibold text-white sm:text-3xl">
-                    {stat.value}
+                    <Counter value={stat.value} />
                   </dd>
                   <p className="mt-1 text-xs text-white/60">{stat.label}</p>
                 </div>
