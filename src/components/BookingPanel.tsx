@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Calendar, MapPin } from "lucide-react";
+import { Calendar, MapPin, AlertTriangle } from "lucide-react";
 import { Car } from "@/lib/types";
 import { locations } from "@/lib/cars";
 import { useBooking } from "@/lib/booking-context";
+import { getUnavailableCarIds } from "@/lib/availability";
 import { formatCurrency, todayIso, addDaysIso, daysBetween } from "@/lib/utils";
 import Select from "@/components/ui/LazySelect";
 import DatePicker from "@/components/ui/LazyDatePicker";
@@ -19,6 +20,11 @@ export default function BookingPanel({ car }: { car: Car }) {
   const [dropoffDate, setDropoffDate] = useState(
     draft.dropoffDate || addDaysIso(todayIso(), 3)
   );
+  const [unavailable, setUnavailable] = useState(false);
+
+  useEffect(() => {
+    getUnavailableCarIds(pickupDate, dropoffDate).then((ids) => setUnavailable(ids.has(car.id)));
+  }, [car.id, pickupDate, dropoffDate]);
 
   const days = Math.max(daysBetween(pickupDate, dropoffDate), 1);
   const subtotal = days * car.pricePerDay;
@@ -88,9 +94,17 @@ export default function BookingPanel({ car }: { car: Car }) {
         </div>
       </div>
 
+      {unavailable && (
+        <p className="mt-4 flex items-center gap-2 rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-xs text-accent">
+          <AlertTriangle size={14} className="shrink-0" />
+          This car is already booked for the selected dates. Try different dates.
+        </p>
+      )}
+
       <button
         onClick={handleContinue}
-        className="mt-6 w-full rounded-full bg-accent px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
+        disabled={unavailable}
+        className="mt-6 w-full rounded-full bg-accent px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
       >
         Continue to booking
       </button>

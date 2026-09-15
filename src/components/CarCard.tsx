@@ -7,7 +7,7 @@ import { Car } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 import { useHoverScale } from "@/lib/useHoverScale";
 
-export default function CarCard({ car }: { car: Car }) {
+export default function CarCard({ car, unavailable = false }: { car: Car; unavailable?: boolean }) {
   const ref = useHoverScale<HTMLAnchorElement>(1.04);
 
   return (
@@ -20,13 +20,18 @@ export default function CarCard({ car }: { car: Car }) {
         <span className="absolute left-4 top-4 z-10 rounded-full bg-white px-3 py-1 text-xs font-semibold text-black shadow-sm">
           {car.category}
         </span>
+        {unavailable && (
+          <span className="absolute right-4 top-4 z-10 rounded-full bg-black/80 px-3 py-1 text-xs font-semibold text-white">
+            Not available
+          </span>
+        )}
         <Image
           src={`/cars/${car.id}.jpg`}
           alt={car.name}
           fill
           sizes="(min-width: 1024px) 420px, (min-width: 640px) 50vw, 90vw"
           quality={100}
-          className="object-cover"
+          className={`object-cover ${unavailable ? "opacity-50 grayscale" : ""}`}
         />
       </div>
 
@@ -65,7 +70,7 @@ export default function CarCard({ car }: { car: Car }) {
             <span className="text-xs text-muted"> / day</span>
           </div>
           <span className="rounded-full border border-border px-3 py-1.5 text-xs text-foreground transition-colors group-hover:border-accent group-hover:text-accent">
-            View details
+            {unavailable ? "See details" : "View details"}
           </span>
         </div>
       </div>

@@ -75,7 +75,12 @@ export interface Database {
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      unavailable_car_ids: {
+        Args: { p_pickup: string; p_dropoff: string };
+        Returns: string[];
+      };
+    };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
   };

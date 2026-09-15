@@ -1,10 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SlidersHorizontal } from "lucide-react";
 import { categories } from "@/lib/cars";
 import { Car, CarCategory, Transmission } from "@/lib/types";
+import { useBooking } from "@/lib/booking-context";
+import { getUnavailableCarIds } from "@/lib/availability";
+import { todayIso, addDaysIso } from "@/lib/utils";
 import CarCard from "@/components/CarCard";
 import Select from "@/components/ui/LazySelect";
 
@@ -26,6 +29,15 @@ export default function FleetBrowser({ cars }: { cars: Car[] }) {
   const [transmission, setTransmission] = useState<Transmission | "All">("All");
   const [maxPrice, setMaxPrice] = useState(600);
   const [sort, setSort] = useState("featured");
+
+  const { draft } = useBooking();
+  const pickupDate = draft.pickupDate || todayIso();
+  const dropoffDate = draft.dropoffDate || addDaysIso(todayIso(), 3);
+  const [unavailableIds, setUnavailableIds] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    getUnavailableCarIds(pickupDate, dropoffDate).then(setUnavailableIds);
+  }, [pickupDate, dropoffDate]);
 
   const filtered = useMemo(() => {
     let list = cars.filter((car) => {
@@ -128,7 +140,10 @@ export default function FleetBrowser({ cars }: { cars: Car[] }) {
 
       <div>
         <div className="flex items-center justify-between gap-4">
-          <p className="text-sm text-muted">{filtered.length} vehicles available</p>
+          <p className="text-sm text-muted">
+            {filtered.length} vehicles ·{" "}
+            {pickupDate} → {dropoffDate}
+          </p>
           <Select
             value={sort}
             onChange={setSort}
@@ -144,7 +159,7 @@ export default function FleetBrowser({ cars }: { cars: Car[] }) {
         ) : (
           <div className="mt-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
             {filtered.map((car) => (
-              <CarCard key={car.id} car={car} />
+              <CarCard key={car.id} car={car} unavailable={unavailableIds.has(car.id)} />
             ))}
           </div>
         )}
