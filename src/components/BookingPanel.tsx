@@ -7,8 +7,8 @@ import { Car } from "@/lib/types";
 import { locations } from "@/lib/cars";
 import { useBooking } from "@/lib/booking-context";
 import { formatCurrency, todayIso, addDaysIso, daysBetween } from "@/lib/utils";
-import Select from "@/components/ui/Select";
-import DatePicker from "@/components/ui/DatePicker";
+import Select from "@/components/ui/LazySelect";
+import DatePicker from "@/components/ui/LazyDatePicker";
 
 export default function BookingPanel({ car }: { car: Car }) {
   const router = useRouter();

@@ -6,7 +6,7 @@ import { SlidersHorizontal } from "lucide-react";
 import { categories } from "@/lib/cars";
 import { Car, CarCategory, Transmission } from "@/lib/types";
 import CarCard from "@/components/CarCard";
-import Select from "@/components/ui/Select";
+import Select from "@/components/ui/LazySelect";
 
 const transmissions: Transmission[] = ["Automatic", "Manual"];
 const sortOptions = [

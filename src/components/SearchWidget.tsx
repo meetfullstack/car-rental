@@ -7,8 +7,8 @@ import { locations } from "@/lib/cars";
 import { useBooking } from "@/lib/booking-context";
 import { todayIso, addDaysIso } from "@/lib/utils";
 import { useHoverScale } from "@/lib/useHoverScale";
-import Select from "@/components/ui/Select";
-import DatePicker from "@/components/ui/DatePicker";
+import Select from "@/components/ui/LazySelect";
+import DatePicker from "@/components/ui/LazyDatePicker";
 
 export default function SearchWidget() {
   const router = useRouter();
