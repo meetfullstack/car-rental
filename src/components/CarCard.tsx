@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Star, Users, Briefcase, Gauge } from "lucide-react";
+import { Star, Users, Briefcase, Gauge, Milestone } from "lucide-react";
 import { Car } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 import { useHoverScale } from "@/lib/useHoverScale";
@@ -42,7 +42,7 @@ export default function CarCard({ car }: { car: Car }) {
           </div>
         </div>
 
-        <div className="mt-4 flex items-center gap-4 text-xs text-muted">
+        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted">
           <span className="flex items-center gap-1">
             <Users size={13} /> {car.seats}
           </span>
@@ -51,6 +51,9 @@ export default function CarCard({ car }: { car: Car }) {
           </span>
           <span className="flex items-center gap-1">
             <Gauge size={13} /> {car.zeroToSixty}s 0–60
+          </span>
+          <span className="flex items-center gap-1">
+            <Milestone size={13} /> Unlimited mileage
           </span>
         </div>
 
