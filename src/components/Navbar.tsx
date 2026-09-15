@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
+import { useTheme } from "next-themes";
 import { Menu, X, Zap, User } from "lucide-react";
 import { useBooking } from "@/lib/booking-context";
 
@@ -13,27 +14,79 @@ const links = [
   { href: "/contact", label: "Contact" },
 ];
 
-// The navbar always stays dark regardless of site theme (a deliberate
-// brand choice), so it uses fixed colors instead of the theme's
-// --foreground/--muted/--border tokens.
-const NAV_BG = "#08090b";
-const NAV_BORDER = "#262a33";
-const NAV_TEXT = "#f4f5f7";
-const NAV_MUTED = "#9aa0ab";
-const NAV_CHROME = "#c7ccd6";
+// In dark mode the navbar always uses this dark palette (the page is dark
+// throughout, so there's nothing to transition to). In light mode it starts
+// with the same dark palette — matching whatever's behind it while a page's
+// dark hero (marked with [data-hero]) is still under the navbar — then
+// crossfades to the light palette once scrolled onto the light page body.
+// Pages with no [data-hero] (fleet, about, etc.) are light from the top.
+const DARK = {
+  bg: "#08090b",
+  border: "#262a33",
+  text: "#f4f5f7",
+  muted: "#9aa0ab",
+  chrome: "#c7ccd6",
+};
+const LIGHT = {
+  bg: "#ffffff",
+  border: "rgba(11,12,14,0.1)",
+  text: "#0b0c0e",
+  muted: "#5b616b",
+  chrome: "#4b5563",
+};
+
+const NAV_HEIGHT = 80;
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const { user } = useBooking();
+  const { resolvedTheme } = useTheme();
+  const [overHero, setOverHero] = useState(true);
+
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+
+  // Reads DOM layout (an external system) to sync nav color with scroll
+  // position on mount and on every scroll/resize.
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    const hero = document.querySelector("[data-hero]");
+    if (!hero) {
+      setOverHero(false);
+      return;
+    }
+    const check = () => {
+      const rect = hero.getBoundingClientRect();
+      setOverHero(rect.bottom > NAV_HEIGHT);
+    };
+    check();
+    window.addEventListener("scroll", check, { passive: true });
+    window.addEventListener("resize", check);
+    return () => {
+      window.removeEventListener("scroll", check);
+      window.removeEventListener("resize", check);
+    };
+    /* eslint-enable react-hooks/set-state-in-effect */
+  }, [pathname]);
+
+  // Default dark before hydration/theme resolves, to avoid a light flash.
+  const isDarkNav = !mounted || resolvedTheme === "dark" || overHero;
+  const c = isDarkNav ? DARK : LIGHT;
+  const transition = "background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease";
 
   return (
     <header
+      suppressHydrationWarning
       className="sticky top-0 z-50 backdrop-blur-md"
       style={{
-        backgroundColor: `${NAV_BG}cc`,
-        borderBottom: `1px solid ${NAV_BORDER}cc`,
-        color: NAV_TEXT,
+        backgroundColor: `${c.bg}cc`,
+        borderBottom: `1px solid ${c.border}${isDarkNav ? "cc" : ""}`,
+        color: c.text,
+        transition,
       }}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
@@ -49,12 +102,15 @@ export default function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm transition-colors"
-              style={{ color: pathname === link.href ? NAV_TEXT : NAV_MUTED }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = NAV_TEXT)}
+              className="text-sm"
+              style={{
+                color: pathname === link.href ? c.text : c.muted,
+                transition,
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = c.text)}
               onMouseLeave={(e) =>
                 (e.currentTarget.style.color =
-                  pathname === link.href ? NAV_TEXT : NAV_MUTED)
+                  pathname === link.href ? c.text : c.muted)
               }
             >
               {link.label}
@@ -66,14 +122,12 @@ export default function Navbar() {
           {user ? (
             <Link
               href="/dashboard"
-              className="flex items-center gap-2 rounded-full px-4 py-2 text-sm transition-colors"
-              style={{ border: `1px solid ${NAV_BORDER}`, color: NAV_TEXT }}
+              className="flex items-center gap-2 rounded-full px-4 py-2 text-sm"
+              style={{ border: `1px solid ${c.border}`, color: c.text, transition }}
               onMouseEnter={(e) =>
-                (e.currentTarget.style.borderColor = `${NAV_CHROME}80`)
+                (e.currentTarget.style.borderColor = `${c.chrome}80`)
               }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.borderColor = NAV_BORDER)
-              }
+              onMouseLeave={(e) => (e.currentTarget.style.borderColor = c.border)}
             >
               <User size={14} />
               {user.name.split(" ")[0]}
@@ -81,10 +135,10 @@ export default function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="text-sm transition-colors"
-              style={{ color: NAV_MUTED }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = NAV_TEXT)}
-              onMouseLeave={(e) => (e.currentTarget.style.color = NAV_MUTED)}
+              className="text-sm"
+              style={{ color: c.muted, transition }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = c.text)}
+              onMouseLeave={(e) => (e.currentTarget.style.color = c.muted)}
             >
               Sign in
             </Link>
@@ -99,7 +153,7 @@ export default function Navbar() {
 
         <button
           className="md:hidden"
-          style={{ color: NAV_TEXT }}
+          style={{ color: c.text, transition }}
           onClick={() => setOpen((v) => !v)}
           aria-label="Toggle menu"
           aria-expanded={open}
@@ -111,7 +165,7 @@ export default function Navbar() {
       {open && (
         <div
           className="px-6 pb-6 md:hidden"
-          style={{ borderTop: `1px solid ${NAV_BORDER}` }}
+          style={{ borderTop: `1px solid ${c.border}`, transition }}
         >
           <nav className="flex flex-col gap-4 pt-4">
             {links.map((link) => (
@@ -119,8 +173,8 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="text-sm transition-colors"
-                style={{ color: NAV_MUTED }}
+                className="text-sm"
+                style={{ color: c.muted, transition }}
               >
                 {link.label}
               </Link>
@@ -128,8 +182,8 @@ export default function Navbar() {
             <Link
               href={user ? "/dashboard" : "/login"}
               onClick={() => setOpen(false)}
-              className="text-sm transition-colors"
-              style={{ color: NAV_MUTED }}
+              className="text-sm"
+              style={{ color: c.muted, transition }}
             >
               {user ? "Dashboard" : "Sign in"}
             </Link>

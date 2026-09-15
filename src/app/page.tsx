@@ -55,7 +55,7 @@ export default async function Home() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative overflow-hidden">
+      <section data-hero className="relative overflow-hidden">
         <HeroVideo />
         <div className="relative mx-auto max-w-7xl px-6 pb-20 pt-20 sm:pt-28">
           <Reveal className="mx-auto max-w-3xl text-center">
