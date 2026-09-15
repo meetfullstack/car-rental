@@ -7,6 +7,8 @@ import { locations } from "@/lib/cars";
 import { useBooking } from "@/lib/booking-context";
 import { todayIso, addDaysIso } from "@/lib/utils";
 import { useHoverScale } from "@/lib/useHoverScale";
+import Select from "@/components/ui/Select";
+import DatePicker from "@/components/ui/DatePicker";
 
 export default function SearchWidget() {
   const router = useRouter();
@@ -34,43 +36,25 @@ export default function SearchWidget() {
         <span className="flex items-center gap-1.5 text-xs text-muted">
           <MapPin size={13} /> Pickup location
         </span>
-        <select
+        <Select
           value={pickup}
-          onChange={(e) => setPickup(e.target.value)}
-          className="rounded-lg border border-border bg-surface-2 px-3 py-2.5 text-sm text-foreground outline-none focus:border-accent"
-        >
-          {locations.map((loc) => (
-            <option key={loc.id} value={loc.city}>
-              {loc.city}
-            </option>
-          ))}
-        </select>
+          onChange={setPickup}
+          options={locations.map((loc) => ({ value: loc.city, label: loc.city }))}
+        />
       </label>
 
       <label className="flex flex-col gap-2">
         <span className="flex items-center gap-1.5 text-xs text-muted">
           <Calendar size={13} /> Pickup date
         </span>
-        <input
-          type="date"
-          min={todayIso()}
-          value={pickupDate}
-          onChange={(e) => setPickupDate(e.target.value)}
-          className="rounded-lg border border-border bg-surface-2 px-3 py-2.5 text-sm text-foreground outline-none focus:border-accent"
-        />
+        <DatePicker value={pickupDate} onChange={setPickupDate} min={todayIso()} />
       </label>
 
       <label className="flex flex-col gap-2">
         <span className="flex items-center gap-1.5 text-xs text-muted">
           <Calendar size={13} /> Drop-off date
         </span>
-        <input
-          type="date"
-          min={pickupDate}
-          value={dropoffDate}
-          onChange={(e) => setDropoffDate(e.target.value)}
-          className="rounded-lg border border-border bg-surface-2 px-3 py-2.5 text-sm text-foreground outline-none focus:border-accent"
-        />
+        <DatePicker value={dropoffDate} onChange={setDropoffDate} min={pickupDate} />
       </label>
 
       <button

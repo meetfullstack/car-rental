@@ -6,6 +6,7 @@ import { SlidersHorizontal } from "lucide-react";
 import { categories } from "@/lib/cars";
 import { Car, CarCategory, Transmission } from "@/lib/types";
 import CarCard from "@/components/CarCard";
+import Select from "@/components/ui/Select";
 
 const transmissions: Transmission[] = ["Automatic", "Manual"];
 const sortOptions = [
@@ -128,17 +129,12 @@ export default function FleetBrowser({ cars }: { cars: Car[] }) {
       <div>
         <div className="flex items-center justify-between gap-4">
           <p className="text-sm text-muted">{filtered.length} vehicles available</p>
-          <select
+          <Select
             value={sort}
-            onChange={(e) => setSort(e.target.value)}
-            className="rounded-lg border border-border bg-surface-2 px-3 py-2 text-sm text-foreground outline-none focus:border-accent"
-          >
-            {sortOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+            onChange={setSort}
+            options={sortOptions}
+            className="flex w-auto min-w-[180px] items-center justify-between gap-2 rounded-lg border border-border bg-surface-2 px-3 py-2 text-sm text-foreground outline-none focus:border-accent data-[state=open]:border-accent"
+          />
         </div>
 
         {filtered.length === 0 ? (
