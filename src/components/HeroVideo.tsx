@@ -28,7 +28,7 @@ export default function HeroVideo() {
           className="h-full w-full"
           style={{
             background:
-              "radial-gradient(120% 90% at 50% 0%, #2a0508 0%, #08090b 60%)",
+              "radial-gradient(120% 90% at 50% 0%, #052e16 0%, #08090b 60%)",
           }}
         />
       )}

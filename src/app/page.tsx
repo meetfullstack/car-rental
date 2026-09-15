@@ -231,7 +231,7 @@ export default async function Home() {
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                "radial-gradient(60% 80% at 50% 0%, rgba(225,29,46,0.2) 0%, transparent 70%)",
+                "radial-gradient(60% 80% at 50% 0%, rgba(22,163,74,0.2) 0%, transparent 70%)",
             }}
           />
           <div className="relative">

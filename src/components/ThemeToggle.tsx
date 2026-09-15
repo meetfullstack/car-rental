@@ -136,8 +136,8 @@ export default function ThemeToggle() {
   if (!mounted) return null;
 
   // Accent red only while hovering (previewing the other theme).
-  const sunColor = isDark && hovered ? "#e11d2e" : "var(--foreground)";
-  const moonColor = !isDark && hovered ? "#e11d2e" : "var(--foreground)";
+  const sunColor = isDark && hovered ? "#16a34a" : "var(--foreground)";
+  const moonColor = !isDark && hovered ? "#16a34a" : "var(--foreground)";
 
   return (
     <div
