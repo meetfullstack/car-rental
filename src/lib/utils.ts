@@ -1,22 +1,25 @@
-const MPG_BY_CATEGORY: Record<string, number> = {
-  Economy: 36,
-  Sedan: 29,
-  SUV: 22,
-  Convertible: 25,
-  Supercar: 15,
+// Combined L/100km by category — Canada (and most of the world) rates
+// fuel economy this way instead of mpg: liters burned per 100km driven,
+// so a LOWER number is better.
+const L_PER_100KM_BY_CATEGORY: Record<string, number> = {
+  Economy: 6.5,
+  Sedan: 8.1,
+  SUV: 10.7,
+  Convertible: 9.4,
+  Supercar: 15.7,
 };
 
 /**
  * The DB has no dedicated fuel-economy column, so this derives a
  * realistic label from category + fuel type instead of a migration.
- * Electric cars report MPGe (EPA's mpg-equivalent unit); everything
- * else is a category-typical combined mpg, bumped up for hybrids.
+ * Electric cars are rated in Le/100km (litre-equivalent, Canada's EV
+ * unit); hybrids get a efficiency bump over their category's baseline.
  */
 export function fuelEconomyLabel(category: string, fuel: string): string {
-  if (fuel === "Electric") return "104 MPGe";
-  const base = MPG_BY_CATEGORY[category] ?? 27;
-  const mpg = fuel === "Hybrid" ? Math.round(base * 1.4) : base;
-  return `${mpg} mpg avg`;
+  if (fuel === "Electric") return "2.3 Le/100km";
+  const base = L_PER_100KM_BY_CATEGORY[category] ?? 8.7;
+  const lPer100km = fuel === "Hybrid" ? base / 1.4 : base;
+  return `${lPer100km.toFixed(1)} L/100km`;
 }
 
 export function formatCurrency(value: number): string {
