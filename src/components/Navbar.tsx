@@ -84,7 +84,13 @@ export default function Navbar() {
       className="sticky top-0 z-50 backdrop-blur-md"
       style={{
         backgroundColor: `${c.bg}${isDarkNav ? "cc" : "f2"}`,
-        borderBottom: `1px solid ${c.border}${isDarkNav ? "cc" : ""}`,
+        // A light hairline reads on any dark background (video or dark
+        // theme); the border palette's own dark gray is nearly invisible
+        // against a near-black hero video.
+        borderBottom: isDarkNav
+          ? "1px solid rgba(255,255,255,0.12)"
+          : `1px solid ${c.border}`,
+        boxShadow: isDarkNav ? "0 8px 24px -8px rgba(0,0,0,0.5)" : "none",
         color: c.text,
         transition,
       }}
