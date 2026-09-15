@@ -14,10 +14,10 @@ export async function generateStaticParams() {
 
 export default async function CarDetailPage({ params }: PageProps<"/fleet/[id]">) {
   const { id } = await params;
-  const car = await getCarById(id);
+  const allCars = await getCars();
+  const car = allCars.find((c) => c.id === id);
   if (!car) notFound();
 
-  const allCars = await getCars();
   const similar = allCars.filter((c) => c.category === car.category && c.id !== car.id).slice(0, 3);
 
   const specs = [

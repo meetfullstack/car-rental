@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { Car, CarCategory, Extra, RentalLocation } from "./types";
 import { supabasePublic } from "./supabase-public";
 import type { Database } from "./database.types";
@@ -28,23 +29,21 @@ function mapCarRow(row: CarRow): Car {
   };
 }
 
-export async function getCars(): Promise<Car[]> {
+// Deduped with React's cache() so a page and its generateMetadata (which
+// run as separate calls per request in the App Router) share one fetch
+// instead of each hitting Supabase independently.
+export const getCars = cache(async (): Promise<Car[]> => {
   const { data, error } = await supabasePublic
     .from("cars")
     .select("*")
     .order("id");
   if (error || !data) return [];
   return data.map(mapCarRow);
-}
+});
 
 export async function getCarById(id: string): Promise<Car | undefined> {
-  const { data, error } = await supabasePublic
-    .from("cars")
-    .select("*")
-    .eq("id", id)
-    .maybeSingle();
-  if (error || !data) return undefined;
-  return mapCarRow(data);
+  const cars = await getCars();
+  return cars.find((c) => c.id === id);
 }
 
 export async function getFeaturedCars(): Promise<Car[]> {
