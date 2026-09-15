@@ -13,7 +13,7 @@ import DatePicker from "@/components/ui/LazyDatePicker";
 
 export default function BookingPanel({ car }: { car: Car }) {
   const router = useRouter();
-  const { draft, setDraft } = useBooking();
+  const { draft, setDraft, user } = useBooking();
 
   const [pickupLocation, setPickupLocation] = useState(draft.pickupLocation || car.location);
   const [pickupDate, setPickupDate] = useState(draft.pickupDate || todayIso());
@@ -22,9 +22,13 @@ export default function BookingPanel({ car }: { car: Car }) {
   );
   const [unavailable, setUnavailable] = useState(false);
 
+  // Only checked for signed-in visitors — an anonymous browser would just
+  // see a discouraging "unavailable" notice for no reason, since they'd
+  // hit the sign-in wall before ever reaching checkout anyway.
   useEffect(() => {
+    if (!user) return;
     getUnavailableCarIds(pickupDate, dropoffDate).then((ids) => setUnavailable(ids.has(car.id)));
-  }, [car.id, pickupDate, dropoffDate]);
+  }, [user, car.id, pickupDate, dropoffDate]);
 
   const days = Math.max(daysBetween(pickupDate, dropoffDate), 1);
   const subtotal = days * car.pricePerDay;

@@ -30,14 +30,18 @@ export default function FleetBrowser({ cars }: { cars: Car[] }) {
   const [maxPrice, setMaxPrice] = useState(600);
   const [sort, setSort] = useState("featured");
 
-  const { draft } = useBooking();
+  const { draft, user } = useBooking();
   const pickupDate = draft.pickupDate || todayIso();
   const dropoffDate = draft.dropoffDate || addDaysIso(todayIso(), 3);
   const [unavailableIds, setUnavailableIds] = useState<Set<string>>(new Set());
 
+  // Only signed-in visitors see live availability — showing "Not available"
+  // badges to anonymous browsers hurts first-visit conversion for no
+  // benefit, since they'd need to sign in to book anyway.
   useEffect(() => {
+    if (!user) return;
     getUnavailableCarIds(pickupDate, dropoffDate).then(setUnavailableIds);
-  }, [pickupDate, dropoffDate]);
+  }, [user, pickupDate, dropoffDate]);
 
   const filtered = useMemo(() => {
     let list = cars.filter((car) => {
