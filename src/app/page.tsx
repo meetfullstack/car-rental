@@ -54,10 +54,12 @@ export default async function Home() {
 
   return (
     <div>
-      {/* Hero */}
-      <section data-hero className="relative overflow-hidden">
+      {/* Hero — pulled up under the sticky nav (nav takes up flow space,
+          so without this the video would only start below it, leaving
+          nothing but the page background behind the transparent nav) */}
+      <section data-hero className="relative -mt-20 overflow-hidden">
         <HeroVideo />
-        <div className="relative mx-auto max-w-7xl px-6 pb-20 pt-20 sm:pt-28">
+        <div className="relative mx-auto max-w-7xl px-6 pb-20 pt-40 sm:pt-48">
           <Reveal className="mx-auto max-w-3xl text-center">
             <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs text-white/80 backdrop-blur">
               <Star size={12} className="text-gold" fill="currentColor" />
