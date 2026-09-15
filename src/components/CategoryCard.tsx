@@ -11,7 +11,7 @@ export default function CategoryCard({ category }: { category: string }) {
     <Link
       ref={ref}
       href={`/fleet?category=${category}`}
-      className="card-surface group relative flex h-32 flex-col items-center justify-center overflow-hidden rounded-xl hover:border-accent/50"
+      className="card-surface group relative flex h-48 flex-col items-center justify-center overflow-hidden rounded-xl hover:border-accent/50"
     >
       <Image
         src={`/categories/${category.toLowerCase()}.jpg`}
