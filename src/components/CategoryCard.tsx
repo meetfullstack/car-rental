@@ -25,7 +25,7 @@ export default function CategoryCard({ category }: { category: string }) {
         className="pointer-events-none absolute inset-x-0 bottom-0 h-[3px] bg-accent"
         style={{ boxShadow: "0 0 16px 4px rgba(22,163,74,0.05)" }}
       />
-      <span className="relative font-display text-sm font-medium text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.85)]">
+      <span className="relative font-display text-lg font-semibold text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.85)] sm:text-xl">
         {category}
       </span>
     </Link>
