@@ -43,7 +43,7 @@ export default function HeroVideo() {
           // edge no matter how many color stops lead into it, especially
           // in light mode where the target color is far from the tint.
           background:
-            "linear-gradient(180deg, rgba(8,9,11,0.45) 0%, rgba(8,9,11,0.46) 55%, rgba(8,9,11,0.55) 75%, var(--background) 100%)",
+            "linear-gradient(180deg, rgba(8,9,11,0.45) 0%, rgba(8,9,11,0.46) 54%, rgba(8,9,11,0.55) 74%, var(--background) 100%)",
         }}
       />
     </div>
