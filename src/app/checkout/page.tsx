@@ -8,6 +8,20 @@ import { useBooking } from "@/lib/booking-context";
 import { extras as allExtras } from "@/lib/cars";
 import { useCar } from "@/lib/useCar";
 import { formatCurrency, daysBetween, generateBookingId, calculatePricing } from "@/lib/utils";
+import {
+  isValidName,
+  isValidEmail,
+  isValidPhone,
+  isValidCardNumber,
+  isValidExpiry,
+  isValidCvc,
+} from "@/lib/validation";
+
+function formatExpiry(raw: string): string {
+  const digits = raw.replace(/\D/g, "").slice(0, 4);
+  if (digits.length <= 2) return digits;
+  return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+}
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -33,6 +47,15 @@ export default function CheckoutPage() {
   const [cardCvc, setCardCvc] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [attempted, setAttempted] = useState(false);
+
+  const nameValid = isValidName(name);
+  const emailValid = isValidEmail(email);
+  const phoneValid = isValidPhone(phone);
+  const cardValid = isValidCardNumber(cardNumber);
+  const expiryValid = isValidExpiry(cardExpiry);
+  const cvcValid = isValidCvc(cardCvc);
+  const formValid = nameValid && emailValid && phoneValid && cardValid && expiryValid && cvcValid;
 
   if (!loading && !car) {
     return (
@@ -76,9 +99,11 @@ export default function CheckoutPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!car) return;
-    setSubmitting(true);
+    setAttempted(true);
     setFormError(null);
+    if (!formValid || !car) return;
+
+    setSubmitting(true);
 
     const bookingId = generateBookingId();
     const { error } = await addBooking({
@@ -115,7 +140,7 @@ export default function CheckoutPage() {
       </div>
       <h1 className="mt-4 font-display text-3xl font-semibold">Checkout</h1>
 
-      <form onSubmit={handleSubmit} className="mt-8 grid gap-8 lg:grid-cols-[1fr_360px]">
+      <form onSubmit={handleSubmit} noValidate className="mt-8 grid gap-8 lg:grid-cols-[1fr_360px]">
         <div className="space-y-8">
           <section className="card-surface rounded-2xl p-6">
             <h2 className="font-display text-lg font-semibold">Driver details</h2>
@@ -123,34 +148,40 @@ export default function CheckoutPage() {
               <label className="flex flex-col gap-2 sm:col-span-2">
                 <span className="text-xs text-muted">Full name</span>
                 <input
-                  required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Jordan Miller"
                   className="rounded-lg border border-border bg-surface-2 px-3 py-2.5 text-sm outline-none focus:border-accent"
                 />
+                {attempted && !nameValid && (
+                  <span className="text-xs text-accent">Enter your full name.</span>
+                )}
               </label>
               <label className="flex flex-col gap-2">
                 <span className="text-xs text-muted">Email</span>
                 <input
-                  required
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="jordan@email.com"
                   className="rounded-lg border border-border bg-surface-2 px-3 py-2.5 text-sm outline-none focus:border-accent"
                 />
+                {attempted && !emailValid && (
+                  <span className="text-xs text-accent">Enter a valid email address.</span>
+                )}
               </label>
               <label className="flex flex-col gap-2">
                 <span className="text-xs text-muted">Phone</span>
                 <input
-                  required
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="(555) 123-4567"
                   className="rounded-lg border border-border bg-surface-2 px-3 py-2.5 text-sm outline-none focus:border-accent"
                 />
+                {attempted && !phoneValid && (
+                  <span className="text-xs text-accent">Enter a valid 10-digit phone number.</span>
+                )}
               </label>
             </div>
           </section>
@@ -167,7 +198,6 @@ export default function CheckoutPage() {
               <label className="flex flex-col gap-2 sm:col-span-2">
                 <span className="text-xs text-muted">Card number</span>
                 <input
-                  required
                   inputMode="numeric"
                   maxLength={19}
                   value={cardNumber}
@@ -175,21 +205,27 @@ export default function CheckoutPage() {
                   placeholder="4242 4242 4242 4242"
                   className="rounded-lg border border-border bg-surface-2 px-3 py-2.5 text-sm outline-none focus:border-accent"
                 />
+                {attempted && !cardValid && (
+                  <span className="text-xs text-accent">Enter a valid card number.</span>
+                )}
               </label>
               <label className="flex flex-col gap-2">
                 <span className="text-xs text-muted">Expiry</span>
                 <input
-                  required
+                  inputMode="numeric"
+                  maxLength={5}
                   value={cardExpiry}
-                  onChange={(e) => setCardExpiry(e.target.value)}
+                  onChange={(e) => setCardExpiry(formatExpiry(e.target.value))}
                   placeholder="MM/YY"
                   className="rounded-lg border border-border bg-surface-2 px-3 py-2.5 text-sm outline-none focus:border-accent"
                 />
+                {attempted && !expiryValid && (
+                  <span className="text-xs text-accent">Enter a valid, unexpired date.</span>
+                )}
               </label>
               <label className="flex flex-col gap-2">
                 <span className="text-xs text-muted">CVC</span>
                 <input
-                  required
                   inputMode="numeric"
                   maxLength={4}
                   value={cardCvc}
@@ -197,6 +233,9 @@ export default function CheckoutPage() {
                   placeholder="123"
                   className="rounded-lg border border-border bg-surface-2 px-3 py-2.5 text-sm outline-none focus:border-accent"
                 />
+                {attempted && !cvcValid && (
+                  <span className="text-xs text-accent">Enter a valid CVC.</span>
+                )}
               </label>
             </div>
           </section>
@@ -230,6 +269,11 @@ export default function CheckoutPage() {
           {formError && (
             <p className="mt-4 rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-xs text-accent">
               {formError}
+            </p>
+          )}
+          {attempted && !formValid && !formError && (
+            <p className="mt-4 rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-xs text-accent">
+              Check the highlighted fields above.
             </p>
           )}
           <button

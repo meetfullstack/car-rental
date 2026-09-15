@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Zap } from "lucide-react";
 import { useBooking } from "@/lib/booking-context";
+import PasswordInput from "@/components/ui/PasswordInput";
+import { isValidEmail, isValidName, isPasswordValid } from "@/lib/validation";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -12,13 +14,24 @@ export default function SignupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [attempted, setAttempted] = useState(false);
+
+  const nameValid = isValidName(name);
+  const emailValid = isValidEmail(email);
+  const passwordValid = isPasswordValid(password);
+  const passwordsMatch = password === confirmPassword && confirmPassword.length > 0;
+  const formValid = nameValid && emailValid && passwordValid && passwordsMatch;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitting(true);
+    setAttempted(true);
     setError(null);
+    if (!formValid) return;
+
+    setSubmitting(true);
     const { error } = await signUp(name, email, password);
     if (error) {
       setError(error);
@@ -39,39 +52,51 @@ export default function SignupPage() {
       <h1 className="mt-8 font-display text-2xl font-semibold">Create your account</h1>
       <p className="mt-1 text-sm text-muted">Book faster with saved details next time.</p>
 
-      <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+      <form onSubmit={handleSubmit} noValidate className="mt-8 space-y-4">
         <label className="flex flex-col gap-2">
           <span className="text-xs text-muted">Full name</span>
           <input
-            required
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Jordan Miller"
             className="rounded-lg border border-border bg-surface-2 px-3 py-2.5 text-sm outline-none focus:border-accent"
           />
+          {attempted && !nameValid && (
+            <span className="text-xs text-accent">Enter your full name.</span>
+          )}
         </label>
         <label className="flex flex-col gap-2">
           <span className="text-xs text-muted">Email</span>
           <input
-            required
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@email.com"
             className="rounded-lg border border-border bg-surface-2 px-3 py-2.5 text-sm outline-none focus:border-accent"
           />
+          {attempted && !emailValid && (
+            <span className="text-xs text-accent">Enter a valid email address.</span>
+          )}
         </label>
         <label className="flex flex-col gap-2">
           <span className="text-xs text-muted">Password</span>
-          <input
-            required
-            type="password"
-            minLength={6}
+          <PasswordInput
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
-            className="rounded-lg border border-border bg-surface-2 px-3 py-2.5 text-sm outline-none focus:border-accent"
+            onChange={setPassword}
+            showChecklist
+            autoComplete="new-password"
           />
+        </label>
+        <label className="flex flex-col gap-2">
+          <span className="text-xs text-muted">Confirm password</span>
+          <PasswordInput
+            value={confirmPassword}
+            onChange={setConfirmPassword}
+            autoComplete="new-password"
+          />
+          {attempted && !passwordsMatch && (
+            <span className="text-xs text-accent">Passwords don&rsquo;t match.</span>
+          )}
         </label>
         {error && (
           <p className="rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-xs text-accent">

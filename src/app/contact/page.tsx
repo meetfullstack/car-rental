@@ -2,12 +2,26 @@
 
 import { useState } from "react";
 import { Mail, Phone, MapPin, CheckCircle2 } from "lucide-react";
+import { isValidEmail, isValidName, isValidMessage } from "@/lib/validation";
 
 export default function ContactPage() {
   const [sent, setSent] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [attempted, setAttempted] = useState(false);
+
+  const nameValid = isValidName(name);
+  const emailValid = isValidEmail(email);
+  const subjectValid = subject.trim().length >= 3;
+  const messageValid = isValidMessage(message);
+  const formValid = nameValid && emailValid && subjectValid && messageValid;
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setAttempted(true);
+    if (!formValid) return;
     setSent(true);
   }
 
@@ -47,42 +61,58 @@ export default function ContactPage() {
               </p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} noValidate className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="flex flex-col gap-2">
                   <span className="text-xs text-muted">Name</span>
                   <input
-                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     placeholder="Your name"
                     className="rounded-lg border border-border bg-surface-2 px-3 py-2.5 text-sm outline-none focus:border-accent"
                   />
+                  {attempted && !nameValid && (
+                    <span className="text-xs text-accent">Enter your name.</span>
+                  )}
                 </label>
                 <label className="flex flex-col gap-2">
                   <span className="text-xs text-muted">Email</span>
                   <input
-                    required
                     type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@email.com"
                     className="rounded-lg border border-border bg-surface-2 px-3 py-2.5 text-sm outline-none focus:border-accent"
                   />
+                  {attempted && !emailValid && (
+                    <span className="text-xs text-accent">Enter a valid email address.</span>
+                  )}
                 </label>
               </div>
               <label className="flex flex-col gap-2">
                 <span className="text-xs text-muted">Subject</span>
                 <input
-                  required
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
                   placeholder="How can we help?"
                   className="rounded-lg border border-border bg-surface-2 px-3 py-2.5 text-sm outline-none focus:border-accent"
                 />
+                {attempted && !subjectValid && (
+                  <span className="text-xs text-accent">Enter a subject.</span>
+                )}
               </label>
               <label className="flex flex-col gap-2">
                 <span className="text-xs text-muted">Message</span>
                 <textarea
-                  required
                   rows={5}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
                   placeholder="Tell us more..."
                   className="rounded-lg border border-border bg-surface-2 px-3 py-2.5 text-sm outline-none focus:border-accent"
                 />
+                {attempted && !messageValid && (
+                  <span className="text-xs text-accent">Message must be at least 10 characters.</span>
+                )}
               </label>
               <button
                 type="submit"
