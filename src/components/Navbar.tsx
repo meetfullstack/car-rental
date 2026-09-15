@@ -23,7 +23,7 @@ const links = [
 const DARK = {
   bg: "#08090b",
   border: "#262a33",
-  text: "#f4f5f7",
+  text: "#ffffff",
   muted: "#9aa0ab",
   chrome: "#c7ccd6",
 };
