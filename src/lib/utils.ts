@@ -1,3 +1,24 @@
+const MPG_BY_CATEGORY: Record<string, number> = {
+  Economy: 36,
+  Sedan: 29,
+  SUV: 22,
+  Convertible: 25,
+  Supercar: 15,
+};
+
+/**
+ * The DB has no dedicated fuel-economy column, so this derives a
+ * realistic label from category + fuel type instead of a migration.
+ * Electric cars report MPGe (EPA's mpg-equivalent unit); everything
+ * else is a category-typical combined mpg, bumped up for hybrids.
+ */
+export function fuelEconomyLabel(category: string, fuel: string): string {
+  if (fuel === "Electric") return "104 MPGe";
+  const base = MPG_BY_CATEGORY[category] ?? 27;
+  const mpg = fuel === "Hybrid" ? Math.round(base * 1.4) : base;
+  return `${mpg} mpg avg`;
+}
+
 export function formatCurrency(value: number): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",

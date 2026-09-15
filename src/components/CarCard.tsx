@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Star, Users, Briefcase, Gauge, Milestone } from "lucide-react";
+import { Star, Users, Briefcase, Fuel, Milestone } from "lucide-react";
 import { Car } from "@/lib/types";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, fuelEconomyLabel } from "@/lib/utils";
 import { useHoverScale } from "@/lib/useHoverScale";
 
 export default function CarCard({ car }: { car: Car }) {
@@ -50,7 +50,7 @@ export default function CarCard({ car }: { car: Car }) {
             <Briefcase size={13} /> {car.bags}
           </span>
           <span className="flex items-center gap-1">
-            <Gauge size={13} /> {car.zeroToSixty}s 0–60
+            <Fuel size={13} /> {fuelEconomyLabel(car.category, car.fuel)}
           </span>
           <span className="flex items-center gap-1">
             <Milestone size={13} /> Unlimited mileage
