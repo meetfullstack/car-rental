@@ -83,7 +83,7 @@ export default function Navbar() {
       suppressHydrationWarning
       className="sticky top-0 z-50 backdrop-blur-md"
       style={{
-        backgroundColor: `${c.bg}cc`,
+        backgroundColor: `${c.bg}${isDarkNav ? "cc" : "f2"}`,
         borderBottom: `1px solid ${c.border}${isDarkNav ? "cc" : ""}`,
         color: c.text,
         transition,
