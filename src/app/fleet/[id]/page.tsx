@@ -44,7 +44,7 @@ export default async function CarDetailPage({ params }: PageProps<"/fleet/[id]">
               alt={car.name}
               fill
               sizes="(min-width: 1024px) 55vw, 100vw"
-              quality={90}
+              quality={100}
               priority
               className="object-cover"
             />

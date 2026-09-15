@@ -17,15 +17,15 @@ export default function CarCard({ car }: { car: Car }) {
       className="group card-surface flex flex-col overflow-hidden rounded-2xl hover:border-chrome/40"
     >
       <div className="relative h-44 overflow-hidden">
-        <span className="absolute left-4 top-4 z-10 rounded-full border border-border bg-background/70 px-3 py-1 text-xs text-muted backdrop-blur">
+        <span className="absolute left-4 top-4 z-10 rounded-full bg-white px-3 py-1 text-xs font-semibold text-black shadow-sm">
           {car.category}
         </span>
         <Image
           src={`/cars/${car.id}.jpg`}
           alt={car.name}
           fill
-          sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
-          quality={90}
+          sizes="(min-width: 1024px) 420px, (min-width: 640px) 50vw, 90vw"
+          quality={100}
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
       </div>
