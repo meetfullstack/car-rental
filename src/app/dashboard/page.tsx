@@ -1,14 +1,23 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { LogOut, ArrowRight, Calendar, MapPin } from "lucide-react";
 import { useBooking } from "@/lib/booking-context";
-import { getCarById } from "@/lib/cars";
+import { getCars } from "@/lib/cars";
+import { Car } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 import CarVisual from "@/components/CarVisual";
 
 export default function DashboardPage() {
-  const { user, bookings, logout } = useBooking();
+  const { user, bookings, signOut } = useBooking();
+  const [carsById, setCarsById] = useState<Record<string, Car>>({});
+
+  useEffect(() => {
+    getCars().then((cars) => {
+      setCarsById(Object.fromEntries(cars.map((c) => [c.id, c])));
+    });
+  }, []);
 
   if (!user) {
     return (
@@ -34,7 +43,7 @@ export default function DashboardPage() {
           <p className="mt-1 text-sm text-muted">{user.email}</p>
         </div>
         <button
-          onClick={logout}
+          onClick={signOut}
           className="flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm text-muted transition-colors hover:border-chrome/50 hover:text-foreground"
         >
           <LogOut size={14} /> Sign out
@@ -59,7 +68,7 @@ export default function DashboardPage() {
         ) : (
           <div className="mt-4 space-y-4">
             {bookings.map((booking) => {
-              const car = getCarById(booking.carId);
+              const car = carsById[booking.carId];
               if (!car) return null;
               return (
                 <div key={booking.id} className="card-surface flex flex-col gap-4 rounded-2xl p-5 sm:flex-row sm:items-center">

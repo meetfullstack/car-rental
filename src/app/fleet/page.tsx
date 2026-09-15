@@ -1,11 +1,13 @@
 import { Suspense } from "react";
 import FleetBrowser from "@/components/FleetBrowser";
+import { getCars } from "@/lib/cars";
 
 export const metadata = {
   title: "Fleet — Velocity",
 };
 
-export default function FleetPage() {
+export default async function FleetPage() {
+  const cars = await getCars();
   return (
     <div className="mx-auto max-w-7xl px-6 py-16">
       <div>
@@ -18,7 +20,7 @@ export default function FleetPage() {
         </p>
       </div>
       <Suspense>
-        <FleetBrowser />
+        <FleetBrowser cars={cars} />
       </Suspense>
     </div>
   );

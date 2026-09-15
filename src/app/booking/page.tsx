@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CheckSquare, Square, ArrowRight } from "lucide-react";
 import { useBooking } from "@/lib/booking-context";
-import { getCarById, extras as allExtras } from "@/lib/cars";
+import { extras as allExtras } from "@/lib/cars";
+import { useCar } from "@/lib/useCar";
 import CarVisual from "@/components/CarVisual";
 import { formatCurrency, daysBetween } from "@/lib/utils";
 
@@ -14,9 +15,9 @@ export default function BookingPage() {
   const { draft, setDraft, hydrated } = useBooking();
   const [selectedExtras, setSelectedExtras] = useState<string[]>(draft.extras || []);
 
-  const car = draft.carId ? getCarById(draft.carId) : undefined;
+  const { car, loading } = useCar(draft.carId);
 
-  if (hydrated && !car) {
+  if (hydrated && !loading && !car) {
     return (
       <div className="mx-auto max-w-2xl px-6 py-24 text-center">
         <h1 className="font-display text-2xl font-semibold">No vehicle selected</h1>

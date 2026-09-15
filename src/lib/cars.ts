@@ -1,264 +1,61 @@
-import { Car, Extra, RentalLocation } from "./types";
+import { Car, CarCategory, Extra, RentalLocation } from "./types";
+import { supabasePublic } from "./supabase-public";
+import type { Database } from "./database.types";
 
-export const cars: Car[] = [
-  {
-    id: "aria-gt",
-    name: "Aria GT",
-    maker: "Lumen",
-    category: "Supercar",
-    pricePerDay: 549,
-    seats: 2,
-    bags: 1,
-    transmission: "Automatic",
-    topSpeedMph: 211,
-    zeroToSixty: 2.8,
-    rating: 4.9,
-    reviews: 214,
-    fuel: "Petrol",
-    colorFrom: "#e11d2e",
-    colorTo: "#5c0a13",
-    featured: true,
-    description:
-      "A mid-engine icon built for the apex. The Aria GT pairs a screaming naturally-aspirated V10 with a carbon monocoque for a driving experience that borders on theatrical.",
-    features: ["Carbon-ceramic brakes", "Launch control", "Track telemetry", "Adaptive suspension"],
-    location: "Los Angeles",
-  },
-  {
-    id: "nimbus-ev1",
-    name: "Nimbus EV1",
-    maker: "Halcyon",
-    category: "Electric",
-    pricePerDay: 189,
-    seats: 5,
-    bags: 3,
-    transmission: "Automatic",
-    topSpeedMph: 155,
-    zeroToSixty: 3.4,
-    rating: 4.8,
-    reviews: 356,
-    fuel: "Electric",
-    colorFrom: "#3ba1ff",
-    colorTo: "#0b2f5c",
-    featured: true,
-    description:
-      "410 miles of range wrapped in a silhouette that looks fast standing still. The Nimbus EV1 brings instant torque and a whisper-quiet cabin to everyday driving.",
-    features: ["410mi range", "Over-the-air updates", "Hands-free autopilot", "Panoramic glass roof"],
-    location: "San Francisco",
-  },
-  {
-    id: "corsa-veloce",
-    name: "Corsa Veloce",
-    maker: "Ferraro",
-    category: "Convertible",
-    pricePerDay: 399,
-    seats: 2,
-    bags: 2,
-    transmission: "Automatic",
-    topSpeedMph: 198,
-    zeroToSixty: 3.1,
-    rating: 4.9,
-    reviews: 178,
-    fuel: "Petrol",
-    colorFrom: "#ff7a1a",
-    colorTo: "#6b2c00",
-    featured: true,
-    description:
-      "Top down, redline up. The Corsa Veloce delivers a twin-turbo V8 soundtrack with the kind of open-air theater that only a convertible can offer.",
-    features: ["Retractable hardtop", "Sport exhaust mode", "Heated seats", "Bespoke leather interior"],
-    location: "Miami",
-  },
-  {
-    id: "atlas-summit",
-    name: "Atlas Summit",
-    maker: "Norden",
-    category: "SUV",
-    pricePerDay: 159,
-    seats: 7,
-    bags: 5,
-    transmission: "Automatic",
-    topSpeedMph: 130,
-    zeroToSixty: 5.6,
-    rating: 4.7,
-    reviews: 421,
-    fuel: "Hybrid",
-    colorFrom: "#4b5563",
-    colorTo: "#111827",
-    description:
-      "Room for the whole crew and then some. The Atlas Summit blends three-row comfort with genuine off-road capability and a hybrid drivetrain that sips fuel.",
-    features: ["Three-row seating", "All-wheel drive", "360° camera", "Adaptive cruise control"],
-    location: "Denver",
-  },
-  {
-    id: "meridian-sl",
-    name: "Meridian SL",
-    maker: "Osaka Motors",
-    category: "Sedan",
-    pricePerDay: 99,
-    seats: 5,
-    bags: 3,
-    transmission: "Automatic",
-    topSpeedMph: 145,
-    zeroToSixty: 6.2,
-    rating: 4.6,
-    reviews: 512,
-    fuel: "Petrol",
-    colorFrom: "#9ca3af",
-    colorTo: "#1f2937",
-    description:
-      "Quiet, composed, and effortlessly efficient. The Meridian SL is the executive sedan of choice for airport runs and cross-city meetings alike.",
-    features: ["Ventilated seats", "Wireless CarPlay", "Lane-keep assist", "Premium sound system"],
-    location: "New York",
-  },
-  {
-    id: "pilot-compact",
-    name: "Pilot Compact",
-    maker: "Osaka Motors",
-    category: "Economy",
-    pricePerDay: 59,
-    seats: 4,
-    bags: 2,
-    transmission: "Manual",
-    topSpeedMph: 118,
-    zeroToSixty: 9.1,
-    rating: 4.4,
-    reviews: 689,
-    fuel: "Petrol",
-    colorFrom: "#22c55e",
-    colorTo: "#052e16",
-    description:
-      "Easy to park, easier on the wallet. The Pilot Compact is the no-fuss choice for city errands and weekend getaways without breaking the budget.",
-    features: ["40 mpg combined", "Backup camera", "Bluetooth audio", "Keyless entry"],
-    location: "Chicago",
-  },
-  {
-    id: "voltrix-gt",
-    name: "Voltrix GT",
-    maker: "Halcyon",
-    category: "Electric",
-    pricePerDay: 259,
-    seats: 4,
-    bags: 2,
-    transmission: "Automatic",
-    topSpeedMph: 174,
-    zeroToSixty: 2.6,
-    rating: 4.9,
-    reviews: 143,
-    fuel: "Electric",
-    colorFrom: "#a855f7",
-    colorTo: "#2e1065",
-    featured: true,
-    description:
-      "Ludicrous acceleration meets grand tourer comfort. The Voltrix GT hits 60 in under three seconds without ever raising its voice.",
-    features: ["Dual motor AWD", "Track mode", "20-min fast charge", "Ambient cabin lighting"],
-    location: "Austin",
-  },
-  {
-    id: "ranger-trail",
-    name: "Ranger Trail",
-    maker: "Norden",
-    category: "SUV",
-    pricePerDay: 139,
-    seats: 5,
-    bags: 4,
-    transmission: "Automatic",
-    topSpeedMph: 112,
-    zeroToSixty: 7.4,
-    rating: 4.5,
-    reviews: 298,
-    fuel: "Petrol",
-    colorFrom: "#b45309",
-    colorTo: "#3f2305",
-    description:
-      "Built for the trail and comfortable on the highway. The Ranger Trail brings locking differentials and real ground clearance to your next adventure.",
-    features: ["Off-road drive modes", "Roof rack", "Tow package", "All-terrain tires"],
-    location: "Denver",
-  },
-  {
-    id: "specter-royale",
-    name: "Specter Royale",
-    maker: "Ferraro",
-    category: "Sedan",
-    pricePerDay: 449,
-    seats: 4,
-    bags: 3,
-    transmission: "Automatic",
-    topSpeedMph: 160,
-    zeroToSixty: 4.9,
-    rating: 5.0,
-    reviews: 87,
-    fuel: "Petrol",
-    colorFrom: "#d4af37",
-    colorTo: "#3a2f0b",
-    featured: true,
-    description:
-      "Arrive like it matters. The Specter Royale is chauffeur-grade luxury with a hand-stitched cabin and a ride so smooth champagne stays still.",
-    features: ["Massage seats", "Starlight headliner", "Rear privacy glass", "Chauffeur mode"],
-    location: "New York",
-  },
-  {
-    id: "breeze-cabrio",
-    name: "Breeze Cabrio",
-    maker: "Osaka Motors",
-    category: "Convertible",
-    pricePerDay: 179,
-    seats: 4,
-    bags: 2,
-    transmission: "Automatic",
-    topSpeedMph: 140,
-    zeroToSixty: 6.8,
-    rating: 4.6,
-    reviews: 231,
-    fuel: "Petrol",
-    colorFrom: "#38bdf8",
-    colorTo: "#0c4a6e",
-    description:
-      "Coastal roads were made for this. The Breeze Cabrio is a relaxed, affordable convertible built for sunset drives, not track days.",
-    features: ["Soft-top roof", "Wind deflector", "Sport-tuned suspension", "Apple CarPlay"],
-    location: "Miami",
-  },
-  {
-    id: "titan-ev-suv",
-    name: "Titan EV",
-    maker: "Halcyon",
-    category: "Electric",
-    pricePerDay: 229,
-    seats: 6,
-    bags: 5,
-    transmission: "Automatic",
-    topSpeedMph: 149,
-    zeroToSixty: 4.2,
-    rating: 4.8,
-    reviews: 267,
-    fuel: "Electric",
-    colorFrom: "#14b8a6",
-    colorTo: "#042f2e",
-    description:
-      "Full-size space with a full-electric drivetrain. The Titan EV seats six in comfort and still keeps up with sports sedans off the line.",
-    features: ["340mi range", "Air suspension", "Six-seat layout", "Bidirectional charging"],
-    location: "San Francisco",
-  },
-  {
-    id: "coupe-mono",
-    name: "Coupe Mono",
-    maker: "Lumen",
-    category: "Sedan",
-    pricePerDay: 129,
-    seats: 4,
-    bags: 2,
-    transmission: "Manual",
-    topSpeedMph: 152,
-    zeroToSixty: 5.9,
-    rating: 4.5,
-    reviews: 198,
-    fuel: "Petrol",
-    colorFrom: "#f43f5e",
-    colorTo: "#4c0519",
-    description:
-      "A driver's coupe in the classic sense — three pedals, a tight chassis, and just enough power to keep you honest.",
-    features: ["6-speed manual", "Limited-slip differential", "Sport bucket seats", "Analog gauge cluster"],
-    location: "Chicago",
-  },
-];
+type CarRow = Database["public"]["Tables"]["cars"]["Row"];
+
+function mapCarRow(row: CarRow): Car {
+  return {
+    id: row.id,
+    name: row.name,
+    maker: row.maker,
+    category: row.category as CarCategory,
+    pricePerDay: row.price_per_day,
+    seats: row.seats,
+    bags: row.bags,
+    transmission: row.transmission as Car["transmission"],
+    topSpeedMph: row.top_speed_mph,
+    zeroToSixty: row.zero_to_sixty,
+    rating: row.rating,
+    reviews: row.reviews,
+    fuel: row.fuel as Car["fuel"],
+    colorFrom: row.color_from,
+    colorTo: row.color_to,
+    featured: row.featured,
+    description: row.description,
+    features: row.features,
+    location: row.location,
+  };
+}
+
+export async function getCars(): Promise<Car[]> {
+  const { data, error } = await supabasePublic
+    .from("cars")
+    .select("*")
+    .order("id");
+  if (error || !data) return [];
+  return data.map(mapCarRow);
+}
+
+export async function getCarById(id: string): Promise<Car | undefined> {
+  const { data, error } = await supabasePublic
+    .from("cars")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+  if (error || !data) return undefined;
+  return mapCarRow(data);
+}
+
+export async function getFeaturedCars(): Promise<Car[]> {
+  const { data, error } = await supabasePublic
+    .from("cars")
+    .select("*")
+    .eq("featured", true)
+    .order("id");
+  if (error || !data) return [];
+  return data.map(mapCarRow);
+}
 
 export const extras: Extra[] = [
   {
@@ -303,15 +100,7 @@ export const locations: RentalLocation[] = [
   { id: "chicago", city: "Chicago", country: "USA", address: "875 N Michigan Ave", hours: "24 / 7" },
 ];
 
-export function getCarById(id: string): Car | undefined {
-  return cars.find((c) => c.id === id);
-}
-
-export function getFeaturedCars(): Car[] {
-  return cars.filter((c) => c.featured);
-}
-
-export const categories: Car["category"][] = [
+export const categories: CarCategory[] = [
   "Economy",
   "Sedan",
   "SUV",

@@ -5,14 +5,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Lock } from "lucide-react";
 import { useBooking } from "@/lib/booking-context";
-import { getCarById, extras as allExtras } from "@/lib/cars";
+import { extras as allExtras } from "@/lib/cars";
+import { useCar } from "@/lib/useCar";
 import { formatCurrency, daysBetween, generateBookingId } from "@/lib/utils";
-import { Booking } from "@/lib/types";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { draft, setDraft, addBooking, user } = useBooking();
-  const car = draft.carId ? getCarById(draft.carId) : undefined;
+  const { draft, setDraft, addBooking, user, hydrated } = useBooking();
+  const { car, loading } = useCar(draft.carId);
 
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
@@ -21,8 +21,9 @@ export default function CheckoutPage() {
   const [cardExpiry, setCardExpiry] = useState("");
   const [cardCvc, setCardCvc] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
-  if (!car) {
+  if (!loading && !car) {
     return (
       <div className="mx-auto max-w-2xl px-6 py-24 text-center">
         <h1 className="font-display text-2xl font-semibold">No vehicle selected</h1>
@@ -37,6 +38,23 @@ export default function CheckoutPage() {
     );
   }
 
+  if (hydrated && !user) {
+    return (
+      <div className="mx-auto max-w-2xl px-6 py-24 text-center">
+        <h1 className="font-display text-2xl font-semibold">Sign in to complete your booking</h1>
+        <p className="mt-2 text-sm text-muted">We need an account to attach your booking to.</p>
+        <Link
+          href="/login?next=/checkout"
+          className="mt-6 inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white"
+        >
+          Sign in <ArrowRight size={15} />
+        </Link>
+      </div>
+    );
+  }
+
+  if (!car) return null;
+
   const days = Math.max(daysBetween(draft.pickupDate, draft.dropoffDate), 1);
   const subtotal = days * car.pricePerDay;
   const extrasTotal = draft.extras.reduce((sum, id) => {
@@ -46,13 +64,15 @@ export default function CheckoutPage() {
   const serviceFee = Math.round((subtotal + extrasTotal) * 0.08);
   const total = subtotal + extrasTotal + serviceFee;
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!car) return;
     setSubmitting(true);
+    setFormError(null);
 
-    const booking: Booking = {
-      id: generateBookingId(),
+    const bookingId = generateBookingId();
+    const { error } = await addBooking({
+      id: bookingId,
       carId: car.id,
       pickupLocation: draft.pickupLocation,
       dropoffLocation: draft.dropoffLocation,
@@ -62,15 +82,16 @@ export default function CheckoutPage() {
       driverName: name,
       driverEmail: email,
       totalPrice: total,
-      createdAt: new Date().toISOString(),
-      status: "Upcoming",
-    };
+    });
 
-    setTimeout(() => {
-      addBooking(booking);
-      setDraft({ carId: null, extras: [] });
-      router.push(`/confirmation?id=${booking.id}`);
-    }, 600);
+    if (error) {
+      setFormError(error);
+      setSubmitting(false);
+      return;
+    }
+
+    setDraft({ carId: null, extras: [] });
+    router.push(`/confirmation?id=${bookingId}`);
   }
 
   return (
@@ -196,6 +217,11 @@ export default function CheckoutPage() {
               <span>{formatCurrency(total)}</span>
             </div>
           </div>
+          {formError && (
+            <p className="mt-4 rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-xs text-accent">
+              {formError}
+            </p>
+          )}
           <button
             type="submit"
             disabled={submitting}

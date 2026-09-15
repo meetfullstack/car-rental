@@ -3,8 +3,8 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { SlidersHorizontal } from "lucide-react";
-import { cars, categories } from "@/lib/cars";
-import { CarCategory, Transmission } from "@/lib/types";
+import { categories } from "@/lib/cars";
+import { Car, CarCategory, Transmission } from "@/lib/types";
 import CarCard from "@/components/CarCard";
 
 const transmissions: Transmission[] = ["Automatic", "Manual"];
@@ -15,7 +15,7 @@ const sortOptions = [
   { value: "rating", label: "Top Rated" },
 ];
 
-export default function FleetBrowser() {
+export default function FleetBrowser({ cars }: { cars: Car[] }) {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category") as CarCategory | null;
 
@@ -40,7 +40,7 @@ export default function FleetBrowser() {
     if (sort === "featured") list = [...list].sort((a, b) => Number(b.featured) - Number(a.featured));
 
     return list;
-  }, [category, transmission, maxPrice, sort]);
+  }, [cars, category, transmission, maxPrice, sort]);
 
   return (
     <div className="mt-10 grid gap-8 lg:grid-cols-[260px_1fr]">

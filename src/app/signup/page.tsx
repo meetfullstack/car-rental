@@ -8,14 +8,23 @@ import { useBooking } from "@/lib/booking-context";
 
 export default function SignupPage() {
   const router = useRouter();
-  const { login } = useBooking();
+  const { signUp } = useBooking();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    login({ name: name || "Driver", email });
+    setSubmitting(true);
+    setError(null);
+    const { error } = await signUp(name, email, password);
+    if (error) {
+      setError(error);
+      setSubmitting(false);
+      return;
+    }
     router.push("/dashboard");
   }
 
@@ -57,17 +66,24 @@ export default function SignupPage() {
           <input
             required
             type="password"
+            minLength={6}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
             className="rounded-lg border border-border bg-surface-2 px-3 py-2.5 text-sm outline-none focus:border-accent"
           />
         </label>
+        {error && (
+          <p className="rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-xs text-accent">
+            {error}
+          </p>
+        )}
         <button
           type="submit"
-          className="w-full rounded-full bg-accent px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
+          disabled={submitting}
+          className="w-full rounded-full bg-accent px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-60"
         >
-          Create account
+          {submitting ? "Creating account…" : "Create account"}
         </button>
       </form>
 
@@ -76,9 +92,6 @@ export default function SignupPage() {
         <Link href="/login" className="text-foreground underline underline-offset-4">
           Sign in
         </Link>
-      </p>
-      <p className="mt-3 text-center text-xs text-muted">
-        Demo authentication — no real account is created and no data leaves your browser.
       </p>
     </div>
   );

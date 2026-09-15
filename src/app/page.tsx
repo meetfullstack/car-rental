@@ -48,8 +48,8 @@ const testimonials = [
   },
 ];
 
-export default function Home() {
-  const featured = getFeaturedCars();
+export default async function Home() {
+  const featured = await getFeaturedCars();
 
   return (
     <div>

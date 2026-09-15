@@ -10,14 +10,22 @@ import { useBooking } from "@/lib/booking-context";
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login } = useBooking();
+  const { signIn } = useBooking();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const name = email.split("@")[0].replace(/[._]/g, " ") || "Driver";
-    login({ name: name.replace(/\b\w/g, (c) => c.toUpperCase()), email });
+    setSubmitting(true);
+    setError(null);
+    const { error } = await signIn(email, password);
+    if (error) {
+      setError(error);
+      setSubmitting(false);
+      return;
+    }
     router.push(searchParams.get("next") || "/dashboard");
   }
 
@@ -55,11 +63,17 @@ function LoginForm() {
             className="rounded-lg border border-border bg-surface-2 px-3 py-2.5 text-sm outline-none focus:border-accent"
           />
         </label>
+        {error && (
+          <p className="rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-xs text-accent">
+            {error}
+          </p>
+        )}
         <button
           type="submit"
-          className="w-full rounded-full bg-accent px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-accent-hover"
+          disabled={submitting}
+          className="w-full rounded-full bg-accent px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-accent-hover disabled:opacity-60"
         >
-          Sign in
+          {submitting ? "Signing in…" : "Sign in"}
         </button>
       </form>
 
@@ -68,9 +82,6 @@ function LoginForm() {
         <Link href="/signup" className="text-foreground underline underline-offset-4">
           Create one
         </Link>
-      </p>
-      <p className="mt-3 text-center text-xs text-muted">
-        Demo authentication — any email/password combination will sign you in.
       </p>
     </div>
   );

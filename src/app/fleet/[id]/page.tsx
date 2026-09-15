@@ -1,22 +1,24 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Star, Users, Briefcase, Gauge, Fuel, Cog, Zap, CheckCircle2 } from "lucide-react";
-import { cars, getCarById } from "@/lib/cars";
+import { getCars, getCarById } from "@/lib/cars";
 import { formatCurrency } from "@/lib/utils";
 import CarVisual from "@/components/CarVisual";
 import CarCard from "@/components/CarCard";
 import BookingPanel from "@/components/BookingPanel";
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const cars = await getCars();
   return cars.map((car) => ({ id: car.id }));
 }
 
 export default async function CarDetailPage({ params }: PageProps<"/fleet/[id]">) {
   const { id } = await params;
-  const car = getCarById(id);
+  const car = await getCarById(id);
   if (!car) notFound();
 
-  const similar = cars.filter((c) => c.category === car.category && c.id !== car.id).slice(0, 3);
+  const allCars = await getCars();
+  const similar = allCars.filter((c) => c.category === car.category && c.id !== car.id).slice(0, 3);
 
   const specs = [
     { icon: Users, label: "Seats", value: `${car.seats}` },
@@ -102,7 +104,7 @@ export default async function CarDetailPage({ params }: PageProps<"/fleet/[id]">
 
 export async function generateMetadata({ params }: PageProps<"/fleet/[id]">) {
   const { id } = await params;
-  const car = getCarById(id);
+  const car = await getCarById(id);
   if (!car) return { title: "Vehicle not found — Velocity" };
   return {
     title: `${car.name} — Velocity`,

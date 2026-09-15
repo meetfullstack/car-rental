@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { CheckCircle2, ArrowRight } from "lucide-react";
 import { useBooking } from "@/lib/booking-context";
-import { getCarById } from "@/lib/cars";
+import { useCar } from "@/lib/useCar";
 import { formatCurrency } from "@/lib/utils";
 import CarVisual from "@/components/CarVisual";
 
@@ -14,6 +14,7 @@ function ConfirmationContent() {
   const id = searchParams.get("id");
   const { bookings } = useBooking();
   const booking = bookings.find((b) => b.id === id);
+  const { car } = useCar(booking?.carId ?? null);
 
   if (!booking) {
     return (
@@ -29,8 +30,6 @@ function ConfirmationContent() {
       </div>
     );
   }
-
-  const car = getCarById(booking.carId);
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-16">
