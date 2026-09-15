@@ -83,7 +83,7 @@ export default async function Home() {
           </Reveal>
 
           <Reveal delay={0.25}>
-            <dl className="mx-auto mt-16 grid max-w-4xl grid-cols-2 gap-8 sm:grid-cols-4">
+            <dl className="mx-auto mt-16 grid max-w-4xl grid-cols-2 gap-4 rounded-2xl border border-white/10 bg-black/30 p-6 backdrop-blur-sm sm:grid-cols-4 sm:gap-8 sm:border-none sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
               {stats.map((stat) => (
                 <div key={stat.label} className="text-center">
                   <dt className="sr-only">{stat.label}</dt>

@@ -6,7 +6,7 @@ export default function HeroVideo() {
   const [failed, setFailed] = useState(false);
 
   return (
-    <div className="absolute inset-0 -z-10 overflow-hidden">
+    <div className="absolute inset-x-0 top-0 -z-10 h-screen overflow-hidden">
       {!failed && (
         <video
           className="h-full w-full"
