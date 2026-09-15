@@ -1,27 +1,3 @@
-// Combined L/100km by category — Canada (and most of the world) rates
-// fuel economy this way instead of mpg: liters burned per 100km driven,
-// so a LOWER number is better.
-const L_PER_100KM_BY_CATEGORY: Record<string, number> = {
-  Economy: 6.5,
-  Sedan: 8.1,
-  SUV: 10.7,
-  Convertible: 9.4,
-  Supercar: 15.7,
-};
-
-/**
- * The DB has no dedicated fuel-economy column, so this derives a
- * realistic label from category + fuel type instead of a migration.
- * Electric cars are rated in Le/100km (litre-equivalent, Canada's EV
- * unit); hybrids get a efficiency bump over their category's baseline.
- */
-export function fuelEconomyLabel(category: string, fuel: string): string {
-  if (fuel === "Electric") return "2.3 Le/100km";
-  const base = L_PER_100KM_BY_CATEGORY[category] ?? 8.7;
-  const lPer100km = fuel === "Hybrid" ? base / 1.4 : base;
-  return `${lPer100km.toFixed(1)} L/100km`;
-}
-
 export function formatCurrency(value: number): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",

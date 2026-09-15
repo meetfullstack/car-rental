@@ -22,6 +22,7 @@ export interface Database {
           description: string;
           features: string[];
           location: string;
+          fuel_economy: string;
         };
         Insert: Partial<Database["public"]["Tables"]["cars"]["Row"]>;
         Update: Partial<Database["public"]["Tables"]["cars"]["Row"]>;

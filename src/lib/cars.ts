@@ -20,6 +20,7 @@ function mapCarRow(row: CarRow): Car {
     rating: row.rating,
     reviews: row.reviews,
     fuel: row.fuel as Car["fuel"],
+    fuelEconomy: row.fuel_economy,
     colorFrom: row.color_from,
     colorTo: row.color_to,
     featured: row.featured,

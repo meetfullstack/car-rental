@@ -22,6 +22,7 @@ export interface Car {
   rating: number;
   reviews: number;
   fuel: "Petrol" | "Electric" | "Hybrid";
+  fuelEconomy: string;
   colorFrom: string;
   colorTo: string;
   featured?: boolean;
