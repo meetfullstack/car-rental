@@ -35,19 +35,19 @@ const testimonials = [
     quote:
       "Booked the Aria GT for a weekend and the whole process took under two minutes. Car was spotless and delivered early.",
     name: "Jordan M.",
-    role: "Los Angeles",
+    role: "Toronto",
   },
   {
     quote:
       "Velocity's pricing is the most transparent I've seen — no surprise fees at pickup, which is rare in this industry.",
     name: "Priya K.",
-    role: "San Francisco",
+    role: "Vancouver",
   },
   {
     quote:
       "Switched our company's travel program to Velocity. The Atlas Summit has been perfect for client trips.",
     name: "Daniel R.",
-    role: "Denver",
+    role: "Calgary",
   },
 ];
 

@@ -23,7 +23,7 @@ export default function ContactPage() {
           {[
             { icon: Mail, label: "Email", value: "support@velocityrentals.example" },
             { icon: Phone, label: "Phone", value: "1-800-555-0134" },
-            { icon: MapPin, label: "HQ", value: "8721 Sunset Concourse, Los Angeles, CA" },
+            { icon: MapPin, label: "HQ", value: "100 Front St W, Toronto, ON" },
           ].map((item) => (
             <div key={item.label} className="flex items-start gap-4">
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-surface-2 text-accent">

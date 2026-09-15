@@ -14,7 +14,7 @@ export default function SearchWidget() {
   const router = useRouter();
   const { draft, setDraft } = useBooking();
   const searchRef = useHoverScale<HTMLButtonElement>(1.05);
-  const [pickup, setPickup] = useState(draft.pickupLocation || "Los Angeles");
+  const [pickup, setPickup] = useState(draft.pickupLocation || "Toronto");
   const [pickupDate, setPickupDate] = useState(draft.pickupDate || todayIso());
   const [dropoffDate, setDropoffDate] = useState(
     draft.dropoffDate || addDaysIso(todayIso(), 3)

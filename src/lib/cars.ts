@@ -91,13 +91,13 @@ export const extras: Extra[] = [
 ];
 
 export const locations: RentalLocation[] = [
-  { id: "los-angeles", city: "Los Angeles", country: "USA", address: "8721 Sunset Concourse, LA", hours: "24 / 7" },
-  { id: "san-francisco", city: "San Francisco", country: "USA", address: "1 Embarcadero Center", hours: "6:00 AM – 11:00 PM" },
-  { id: "miami", city: "Miami", country: "USA", address: "220 Biscayne Blvd", hours: "24 / 7" },
-  { id: "new-york", city: "New York", country: "USA", address: "441 Madison Ave", hours: "24 / 7" },
-  { id: "denver", city: "Denver", country: "USA", address: "1600 Larimer St", hours: "5:00 AM – 12:00 AM" },
-  { id: "austin", city: "Austin", country: "USA", address: "301 Congress Ave", hours: "6:00 AM – 11:00 PM" },
-  { id: "chicago", city: "Chicago", country: "USA", address: "875 N Michigan Ave", hours: "24 / 7" },
+  { id: "toronto", city: "Toronto", country: "Canada", address: "100 Front St W, Toronto", hours: "24 / 7" },
+  { id: "vancouver", city: "Vancouver", country: "Canada", address: "900 Canada Pl, Vancouver", hours: "6:00 AM – 11:00 PM" },
+  { id: "montreal", city: "Montreal", country: "Canada", address: "1000 Rue Sainte-Catherine O, Montreal", hours: "24 / 7" },
+  { id: "ottawa", city: "Ottawa", country: "Canada", address: "90 Sparks St, Ottawa", hours: "24 / 7" },
+  { id: "calgary", city: "Calgary", country: "Canada", address: "200 8 Ave SW, Calgary", hours: "5:00 AM – 12:00 AM" },
+  { id: "edmonton", city: "Edmonton", country: "Canada", address: "101 Jasper Ave, Edmonton", hours: "6:00 AM – 11:00 PM" },
+  { id: "winnipeg", city: "Winnipeg", country: "Canada", address: "393 Portage Ave, Winnipeg", hours: "24 / 7" },
 ];
 
 export const categories: CarCategory[] = [

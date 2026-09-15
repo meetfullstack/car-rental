@@ -58,8 +58,8 @@ interface BookingContextValue {
 
 const defaultDraft: DraftBooking = {
   carId: null,
-  pickupLocation: "Los Angeles",
-  dropoffLocation: "Los Angeles",
+  pickupLocation: "Toronto",
+  dropoffLocation: "Toronto",
   pickupDate: "",
   dropoffDate: "",
   extras: [],
