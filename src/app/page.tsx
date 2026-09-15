@@ -133,7 +133,7 @@ export default async function Home() {
               Something for every drive
             </h2>
           </Reveal>
-          <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+          <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3">
             {categories.map((category, i) => (
               <Reveal key={category} delay={i * 0.05}>
                 <CategoryCard category={category} />
