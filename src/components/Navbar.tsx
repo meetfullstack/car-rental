@@ -81,16 +81,18 @@ export default function Navbar() {
   return (
     <header
       suppressHydrationWarning
-      className="sticky top-0 z-50 backdrop-blur-md"
+      className="sticky top-0 z-50 backdrop-blur-xl"
       style={{
-        backgroundColor: `${c.bg}${isDarkNav ? "cc" : "f2"}`,
-        // A light hairline reads on any dark background (video or dark
-        // theme); the border palette's own dark gray is nearly invisible
-        // against a near-black hero video.
+        // Liquid-glass look: ~2% tint, blur does the rest. A light hairline
+        // and soft shadow keep it readable against any background since
+        // there's almost no solid fill to separate it visually.
+        backgroundColor: `${c.bg}05`,
         borderBottom: isDarkNav
           ? "1px solid rgba(255,255,255,0.12)"
-          : `1px solid ${c.border}`,
-        boxShadow: isDarkNav ? "0 8px 24px -8px rgba(0,0,0,0.5)" : "none",
+          : "1px solid rgba(11,12,14,0.08)",
+        boxShadow: isDarkNav
+          ? "inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 24px -8px rgba(0,0,0,0.5)"
+          : "inset 0 1px 0 rgba(255,255,255,0.4), 0 8px 24px -8px rgba(0,0,0,0.12)",
         color: c.text,
         transition,
       }}
