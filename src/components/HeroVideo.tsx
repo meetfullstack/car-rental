@@ -9,13 +9,14 @@ export default function HeroVideo() {
     <div className="absolute inset-0 -z-10 overflow-hidden">
       {!failed && (
         <video
-          className="h-full w-full object-cover"
+          className="h-full w-full"
+          style={{ objectFit: "cover", objectPosition: "center 65%" }}
           autoPlay
-          loop
           muted
           playsInline
           preload="metadata"
           onError={() => setFailed(true)}
+          onEnded={(e) => e.currentTarget.pause()}
         >
           <source src="/hero-video.mp4" type="video/mp4" />
         </video>
