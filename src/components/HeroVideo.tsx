@@ -39,7 +39,7 @@ export default function HeroVideo() {
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg, rgba(8,9,11,0.55) 0%, rgba(8,9,11,0.8) 65%, var(--background) 100%)",
+            "linear-gradient(180deg, rgba(8,9,11,0.45) 0%, rgba(8,9,11,0.55) 70%, rgba(8,9,11,0.75) 88%, var(--background) 100%)",
         }}
       />
     </div>
