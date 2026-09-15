@@ -32,12 +32,14 @@ export default function HeroVideo() {
           }}
         />
       )}
-      {/* Dark gradient for text contrast over the footage */}
+      {/* Dark gradient for text contrast over the footage, fading into
+          whichever page background follows (light or dark theme) so the
+          hero blends into the next section instead of hard-cutting. */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg, rgba(8,9,11,0.55) 0%, rgba(8,9,11,0.75) 55%, rgba(8,9,11,1) 100%)",
+            "linear-gradient(180deg, rgba(8,9,11,0.55) 0%, rgba(8,9,11,0.8) 65%, var(--background) 100%)",
         }}
       />
     </div>

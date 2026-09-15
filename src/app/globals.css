@@ -74,17 +74,13 @@ body {
   background: var(--border);
 }
 
+/* Always light-on-dark: this only ever sits over the dark hero video,
+   regardless of site theme, so it does not follow .dark overrides. */
 .text-gradient-chrome {
-  background: linear-gradient(180deg, #1f2937 0%, #4b5563 55%, #6b7280 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.dark .text-gradient-chrome {
   background: linear-gradient(180deg, #ffffff 0%, #c7ccd6 55%, #7d828c 100%);
   -webkit-background-clip: text;
   background-clip: text;
+  color: transparent;
 }
 
 .card-surface {

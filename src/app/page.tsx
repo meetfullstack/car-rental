@@ -59,15 +59,15 @@ export default async function Home() {
         <HeroVideo />
         <div className="relative mx-auto max-w-7xl px-6 pb-20 pt-20 sm:pt-28">
           <Reveal className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-1.5 text-xs text-muted">
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-1.5 text-xs text-white/80 backdrop-blur">
               <Star size={12} className="text-gold" fill="currentColor" />
               Rated 4.8/5 by 12,000+ renters
             </span>
-            <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl">
+            <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.05] tracking-tight text-white sm:text-6xl md:text-7xl">
               Rent the
               <span className="text-gradient-chrome"> extraordinary.</span>
             </h1>
-            <p className="mx-auto mt-6 max-w-xl text-balance text-base text-muted sm:text-lg">
+            <p className="mx-auto mt-6 max-w-xl text-balance text-base text-white/70 sm:text-lg">
               From daily drivers to weekend supercars, Velocity puts an
               exceptional fleet, honest pricing, and doorstep delivery within
               reach — in 38 cities and counting.
@@ -83,10 +83,10 @@ export default async function Home() {
               {stats.map((stat) => (
                 <div key={stat.label} className="text-center">
                   <dt className="sr-only">{stat.label}</dt>
-                  <dd className="font-display text-2xl font-semibold sm:text-3xl">
+                  <dd className="font-display text-2xl font-semibold text-white sm:text-3xl">
                     {stat.value}
                   </dd>
-                  <p className="mt-1 text-xs text-muted">{stat.label}</p>
+                  <p className="mt-1 text-xs text-white/60">{stat.label}</p>
                 </div>
               ))}
             </dl>
