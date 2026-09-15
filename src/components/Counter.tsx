@@ -11,12 +11,24 @@ interface CounterProps {
 }
 
 function parseValue(raw: string) {
-  const match = raw.match(/-?\d+(\.\d+)?/);
-  const number = match ? parseFloat(match[0]) : 0;
-  const decimals = match && match[0].includes(".") ? match[0].split(".")[1].length : 0;
+  // Matches the full run of digits, including thousands separators
+  // (e.g. "1,200"), not just the first digit group.
+  const match = raw.match(/-?[\d,]+(\.\d+)?/);
+  const digits = match ? match[0] : "";
+  const hasCommas = digits.includes(",");
+  const number = digits ? parseFloat(digits.replace(/,/g, "")) : 0;
+  const decimals = digits.includes(".") ? digits.split(".")[1].length : 0;
   const prefix = match ? raw.slice(0, match.index) : raw;
   const suffix = match ? raw.slice((match.index ?? 0) + match[0].length) : "";
-  return { number, decimals, prefix, suffix };
+  return { number, decimals, prefix, suffix, hasCommas };
+}
+
+function formatNumber(n: number, decimals: number, hasCommas: boolean) {
+  const fixed = n.toFixed(decimals);
+  if (!hasCommas) return fixed;
+  const [whole, frac] = fixed.split(".");
+  const withCommas = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return frac ? `${withCommas}.${frac}` : withCommas;
 }
 
 export default function Counter({ value, className, delay = 0 }: CounterProps): ReactNode {
@@ -25,13 +37,13 @@ export default function Counter({ value, className, delay = 0 }: CounterProps): 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const { number, decimals, prefix, suffix } = parseValue(value);
+    const { number, decimals, prefix, suffix, hasCommas } = parseValue(value);
     const counter = { n: 0 };
 
     const ctx = gsap.context(() => {
       gsap.to(counter, {
         n: number,
-        duration: 1.4,
+        duration: 2.2,
         delay,
         ease: "power2.out",
         scrollTrigger: {
@@ -40,7 +52,7 @@ export default function Counter({ value, className, delay = 0 }: CounterProps): 
           toggleActions: "play none none none",
         },
         onUpdate: () => {
-          el.textContent = `${prefix}${counter.n.toFixed(decimals)}${suffix}`;
+          el.textContent = `${prefix}${formatNumber(counter.n, decimals, hasCommas)}${suffix}`;
         },
       });
     }, ref);
