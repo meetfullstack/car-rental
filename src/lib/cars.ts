@@ -98,6 +98,7 @@ export const locations: RentalLocation[] = [
   { id: "calgary", city: "Calgary", country: "Canada", address: "200 8 Ave SW, Calgary", hours: "5:00 AM – 12:00 AM" },
   { id: "edmonton", city: "Edmonton", country: "Canada", address: "101 Jasper Ave, Edmonton", hours: "6:00 AM – 11:00 PM" },
   { id: "winnipeg", city: "Winnipeg", country: "Canada", address: "393 Portage Ave, Winnipeg", hours: "24 / 7" },
+  { id: "kingston", city: "Kingston", country: "Canada", address: "175 Ontario St, Kingston", hours: "7:00 AM – 10:00 PM" },
 ];
 
 export const categories: CarCategory[] = [
