@@ -1,11 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Star, Users, Briefcase, Gauge } from "lucide-react";
 import { Car } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 import { useHoverScale } from "@/lib/useHoverScale";
-import CarVisual from "./CarVisual";
 
 export default function CarCard({ car }: { car: Car }) {
   const ref = useHoverScale<HTMLAnchorElement>(1.02);
@@ -16,20 +16,17 @@ export default function CarCard({ car }: { car: Car }) {
       href={`/fleet/${car.id}`}
       className="group card-surface flex flex-col overflow-hidden rounded-2xl hover:border-chrome/40"
     >
-      <div
-        className="relative flex items-center justify-center overflow-hidden px-6 pt-8"
-        style={{
-          background: `radial-gradient(120% 100% at 50% 100%, ${car.colorFrom}22 0%, transparent 70%)`,
-        }}
-      >
-        <span className="absolute left-4 top-4 rounded-full border border-border bg-background/70 px-3 py-1 text-xs text-muted backdrop-blur">
+      <div className="relative h-44 overflow-hidden">
+        <span className="absolute left-4 top-4 z-10 rounded-full border border-border bg-background/70 px-3 py-1 text-xs text-muted backdrop-blur">
           {car.category}
         </span>
-        <CarVisual
-          id={car.id}
-          colorFrom={car.colorFrom}
-          colorTo={car.colorTo}
-          className="w-full max-w-[280px] transition-transform duration-500 group-hover:scale-105"
+        <Image
+          src={`/cars/${car.id}.jpg`}
+          alt={car.name}
+          fill
+          sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw"
+          quality={90}
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
       </div>
 

@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CheckSquare, Square, ArrowRight } from "lucide-react";
 import { useBooking } from "@/lib/booking-context";
 import { extras as allExtras } from "@/lib/cars";
 import { useCar } from "@/lib/useCar";
-import CarVisual from "@/components/CarVisual";
 import { formatCurrency, daysBetween, calculatePricing } from "@/lib/utils";
 
 export default function BookingPage() {
@@ -67,7 +67,16 @@ export default function BookingPage() {
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_360px]">
         <div>
           <div className="card-surface flex items-center gap-6 rounded-2xl p-5">
-            <CarVisual id={car.id} colorFrom={car.colorFrom} colorTo={car.colorTo} className="w-40" />
+            <div className="relative h-24 w-40 shrink-0 overflow-hidden rounded-xl">
+              <Image
+                src={`/cars/${car.id}.jpg`}
+                alt={car.name}
+                fill
+                sizes="160px"
+                quality={90}
+                className="object-cover"
+              />
+            </div>
             <div>
               <p className="text-xs text-muted">{car.maker}</p>
               <h2 className="font-display text-xl font-semibold">{car.name}</h2>

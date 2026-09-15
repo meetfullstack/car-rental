@@ -1,13 +1,13 @@
 "use client";
 
 import { Suspense } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { CheckCircle2, ArrowRight } from "lucide-react";
 import { useBooking } from "@/lib/booking-context";
 import { useCar } from "@/lib/useCar";
 import { formatCurrency } from "@/lib/utils";
-import CarVisual from "@/components/CarVisual";
 
 function ConfirmationContent() {
   const searchParams = useSearchParams();
@@ -51,7 +51,16 @@ function ConfirmationContent() {
       <div className="card-surface mt-10 rounded-2xl p-6">
         {car && (
           <div className="flex items-center gap-6">
-            <CarVisual id={car.id} colorFrom={car.colorFrom} colorTo={car.colorTo} className="w-32" />
+            <div className="relative h-20 w-32 shrink-0 overflow-hidden rounded-xl">
+              <Image
+                src={`/cars/${car.id}.jpg`}
+                alt={car.name}
+                fill
+                sizes="128px"
+                quality={90}
+                className="object-cover"
+              />
+            </div>
             <div>
               <p className="text-xs text-muted">{car.maker}</p>
               <h2 className="font-display text-xl font-semibold">{car.name}</h2>

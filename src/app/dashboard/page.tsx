@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { LogOut, ArrowRight, Calendar, MapPin } from "lucide-react";
 import { useBooking } from "@/lib/booking-context";
 import { getCars } from "@/lib/cars";
 import { Car } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
-import CarVisual from "@/components/CarVisual";
 
 export default function DashboardPage() {
   const { user, bookings, signOut, authLoading } = useBooking();
@@ -74,7 +74,16 @@ export default function DashboardPage() {
               if (!car) return null;
               return (
                 <div key={booking.id} className="card-surface flex flex-col gap-4 rounded-2xl p-5 sm:flex-row sm:items-center">
-                  <CarVisual id={car.id} colorFrom={car.colorFrom} colorTo={car.colorTo} className="w-32 shrink-0" />
+                  <div className="relative h-20 w-32 shrink-0 overflow-hidden rounded-xl">
+                    <Image
+                      src={`/cars/${car.id}.jpg`}
+                      alt={car.name}
+                      fill
+                      sizes="128px"
+                      quality={90}
+                      className="object-cover"
+                    />
+                  </div>
                   <div className="flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <h3 className="font-display text-lg font-semibold">{car.name}</h3>

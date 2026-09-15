@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { Star, Users, Briefcase, Gauge, Fuel, Cog, Zap, CheckCircle2 } from "lucide-react";
 import { getCars, getCarById } from "@/lib/cars";
 import { formatCurrency } from "@/lib/utils";
-import CarVisual from "@/components/CarVisual";
 import CarCard from "@/components/CarCard";
 import BookingPanel from "@/components/BookingPanel";
 
@@ -38,13 +38,16 @@ export default async function CarDetailPage({ params }: PageProps<"/fleet/[id]">
 
       <div className="mt-6 grid gap-10 lg:grid-cols-[1.4fr_1fr]">
         <div>
-          <div
-            className="card-surface flex items-center justify-center rounded-2xl p-10"
-            style={{
-              background: `radial-gradient(120% 100% at 50% 100%, ${car.colorFrom}22 0%, transparent 70%)`,
-            }}
-          >
-            <CarVisual id={car.id} colorFrom={car.colorFrom} colorTo={car.colorTo} className="w-full max-w-lg" />
+          <div className="card-surface relative h-72 overflow-hidden rounded-2xl sm:h-96">
+            <Image
+              src={`/cars/${car.id}.jpg`}
+              alt={car.name}
+              fill
+              sizes="(min-width: 1024px) 55vw, 100vw"
+              quality={90}
+              priority
+              className="object-cover"
+            />
           </div>
 
           <div className="mt-8 flex flex-wrap items-start justify-between gap-4">
