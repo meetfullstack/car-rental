@@ -3,6 +3,8 @@ import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ThemeProvider from "@/components/ThemeProvider";
+import ThemeToggle from "@/components/ThemeToggle";
 import { BookingProvider } from "@/lib/booking-context";
 
 const inter = Inter({
@@ -27,13 +29,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       className={`${inter.variable} ${spaceGrotesk.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        <BookingProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </BookingProvider>
+        <ThemeProvider>
+          <BookingProvider>
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+            <ThemeToggle />
+          </BookingProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

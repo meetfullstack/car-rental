@@ -1,6 +1,19 @@
 @import "tailwindcss";
 
 :root {
+  --background: #f6f6f7;
+  --surface: #ffffff;
+  --surface-2: #eef0f2;
+  --border: rgba(11, 12, 14, 0.1);
+  --foreground: #0b0c0e;
+  --muted: #5b616b;
+  --accent: #e11d2e;
+  --accent-hover: #c81726;
+  --chrome: #4b5563;
+  --gold: #a16207;
+}
+
+.dark {
   --background: #08090b;
   --surface: #111318;
   --surface-2: #171a20;
@@ -32,6 +45,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .font-display {
@@ -61,10 +75,16 @@ body {
 }
 
 .text-gradient-chrome {
-  background: linear-gradient(180deg, #ffffff 0%, #c7ccd6 55%, #7d828c 100%);
+  background: linear-gradient(180deg, #1f2937 0%, #4b5563 55%, #6b7280 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+.dark .text-gradient-chrome {
+  background: linear-gradient(180deg, #ffffff 0%, #c7ccd6 55%, #7d828c 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
 }
 
 .card-surface {
