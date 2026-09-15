@@ -48,6 +48,7 @@ interface BookingContextValue {
   setDraft: (patch: Partial<DraftBooking>) => void;
   bookings: Booking[];
   addBooking: (booking: NewBookingInput) => Promise<AuthResult>;
+  cancelBooking: (bookingId: string) => Promise<AuthResult>;
   user: AuthUser | null;
   authLoading: boolean;
   signUp: (name: string, email: string, password: string) => Promise<AuthResult>;
@@ -231,12 +232,30 @@ export function BookingProvider({ children }: { children: React.ReactNode }) {
     [supabase, user, loadBookings]
   );
 
+  const cancelBooking = useCallback(
+    async (bookingId: string): Promise<AuthResult> => {
+      if (!user) return { error: "You must be signed in to cancel a booking." };
+
+      const { error } = await supabase
+        .from("bookings")
+        .update({ status: "Cancelled" })
+        .eq("id", bookingId)
+        .eq("user_id", user.id);
+
+      if (error) return { error: error.message };
+      await loadBookings(user.id);
+      return {};
+    },
+    [supabase, user, loadBookings]
+  );
+
   const value = useMemo(
     () => ({
       draft,
       setDraft,
       bookings,
       addBooking,
+      cancelBooking,
       user,
       authLoading,
       signUp,
@@ -244,7 +263,19 @@ export function BookingProvider({ children }: { children: React.ReactNode }) {
       signOut,
       hydrated,
     }),
-    [draft, setDraft, bookings, addBooking, user, authLoading, signUp, signIn, signOut, hydrated]
+    [
+      draft,
+      setDraft,
+      bookings,
+      addBooking,
+      cancelBooking,
+      user,
+      authLoading,
+      signUp,
+      signIn,
+      signOut,
+      hydrated,
+    ]
   );
 
   return (
