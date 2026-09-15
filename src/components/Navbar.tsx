@@ -83,16 +83,23 @@ export default function Navbar() {
       suppressHydrationWarning
       className="sticky top-0 z-50 backdrop-blur-xl"
       style={{
-        // Liquid-glass look: ~2% tint, blur does the rest. A light hairline
-        // and soft shadow keep it readable against any background since
-        // there's almost no solid fill to separate it visually.
+        // Liquid-glass look: ~2% tint, blur does the rest. While sitting
+        // over the hero video it stays nearly seamless (just a faint
+        // hairline, no drop shadow) so it reads as part of the video
+        // rather than a bar floating above it; once past the hero (or on
+        // a page with no video) it picks up a touch more definition so it
+        // still separates from ordinary page content.
         backgroundColor: `${c.bg}05`,
-        borderBottom: isDarkNav
-          ? "1px solid rgba(255,255,255,0.12)"
-          : "1px solid rgba(11,12,14,0.08)",
-        boxShadow: isDarkNav
-          ? "inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 24px -8px rgba(0,0,0,0.5)"
-          : "inset 0 1px 0 rgba(255,255,255,0.4), 0 8px 24px -8px rgba(0,0,0,0.12)",
+        borderBottom: overHero
+          ? "1px solid rgba(255,255,255,0.06)"
+          : isDarkNav
+            ? "1px solid rgba(255,255,255,0.12)"
+            : "1px solid rgba(11,12,14,0.08)",
+        boxShadow: overHero
+          ? "none"
+          : isDarkNav
+            ? "inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 24px -8px rgba(0,0,0,0.5)"
+            : "inset 0 1px 0 rgba(255,255,255,0.4), 0 8px 24px -8px rgba(0,0,0,0.12)",
         color: c.text,
         transition,
       }}
