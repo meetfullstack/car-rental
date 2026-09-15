@@ -24,6 +24,7 @@ interface AuthUser {
   id: string;
   name: string;
   email: string;
+  isAdmin: boolean;
 }
 
 interface NewBookingInput {
@@ -49,6 +50,12 @@ interface BookingContextValue {
   bookings: Booking[];
   addBooking: (booking: NewBookingInput) => Promise<AuthResult>;
   cancelBooking: (bookingId: string) => Promise<AuthResult>;
+  rescheduleBooking: (
+    bookingId: string,
+    pickupDate: string,
+    dropoffDate: string,
+    totalPrice: number
+  ) => Promise<AuthResult>;
   user: AuthUser | null;
   authLoading: boolean;
   signUp: (name: string, email: string, password: string) => Promise<AuthResult>;
@@ -67,6 +74,19 @@ const defaultDraft: DraftBooking = {
 };
 
 const BookingContext = createContext<BookingContextValue | null>(null);
+
+/**
+ * The DB enforces booking rules (overlap prevention, the 24h cancellation
+ * / modification window) via a Postgres exclusion constraint and trigger,
+ * which surface as raw error codes/messages — translate the common ones
+ * into copy a driver would actually understand.
+ */
+function friendlyBookingError(error: { code?: string; message: string }): string {
+  if (error.code === "23P01") {
+    return "This car is already booked for the selected dates. Please choose different dates.";
+  }
+  return error.message;
+}
 
 function mapBookingRow(row: {
   id: string;
@@ -146,7 +166,7 @@ export function BookingProvider({ children }: { children: React.ReactNode }) {
       }
       const { data: profile } = await supabase
         .from("profiles")
-        .select("full_name, email")
+        .select("full_name, email, is_admin")
         .eq("id", sessionUser.id)
         .maybeSingle();
 
@@ -154,6 +174,7 @@ export function BookingProvider({ children }: { children: React.ReactNode }) {
         id: sessionUser.id,
         name: profile?.full_name || sessionUser.email?.split("@")[0] || "Driver",
         email: profile?.email || sessionUser.email || "",
+        isAdmin: profile?.is_admin ?? false,
       });
       await loadBookings(sessionUser.id);
     },
@@ -225,7 +246,7 @@ export function BookingProvider({ children }: { children: React.ReactNode }) {
         total_price: booking.totalPrice,
       });
 
-      if (error) return { error: error.message };
+      if (error) return { error: friendlyBookingError(error) };
       await loadBookings(user.id);
       return {};
     },
@@ -242,7 +263,33 @@ export function BookingProvider({ children }: { children: React.ReactNode }) {
         .eq("id", bookingId)
         .eq("user_id", user.id);
 
-      if (error) return { error: error.message };
+      if (error) return { error: friendlyBookingError(error) };
+      await loadBookings(user.id);
+      return {};
+    },
+    [supabase, user, loadBookings]
+  );
+
+  const rescheduleBooking = useCallback(
+    async (
+      bookingId: string,
+      pickupDate: string,
+      dropoffDate: string,
+      totalPrice: number
+    ): Promise<AuthResult> => {
+      if (!user) return { error: "You must be signed in to modify a booking." };
+
+      const { error } = await supabase
+        .from("bookings")
+        .update({
+          pickup_date: pickupDate,
+          dropoff_date: dropoffDate,
+          total_price: totalPrice,
+        })
+        .eq("id", bookingId)
+        .eq("user_id", user.id);
+
+      if (error) return { error: friendlyBookingError(error) };
       await loadBookings(user.id);
       return {};
     },
@@ -256,6 +303,7 @@ export function BookingProvider({ children }: { children: React.ReactNode }) {
       bookings,
       addBooking,
       cancelBooking,
+      rescheduleBooking,
       user,
       authLoading,
       signUp,
@@ -269,6 +317,7 @@ export function BookingProvider({ children }: { children: React.ReactNode }) {
       bookings,
       addBooking,
       cancelBooking,
+      rescheduleBooking,
       user,
       authLoading,
       signUp,

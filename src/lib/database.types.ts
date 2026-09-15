@@ -67,6 +67,7 @@ export interface Database {
           full_name: string | null;
           email: string | null;
           created_at: string;
+          is_admin: boolean;
         };
         Insert: Partial<Database["public"]["Tables"]["profiles"]["Row"]>;
         Update: Partial<Database["public"]["Tables"]["profiles"]["Row"]>;
