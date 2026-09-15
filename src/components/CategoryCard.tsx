@@ -25,16 +25,17 @@ export default function CategoryCard({
           id={`cat-${car.id}`}
           colorFrom={car.colorFrom}
           colorTo={car.colorTo}
-          className="absolute inset-0 h-full w-full scale-125 opacity-40 transition-transform duration-500 group-hover:scale-[1.35]"
+          className="absolute inset-0 h-full w-full scale-125 opacity-40"
         />
       )}
-      {/* Green brand tint fading to transparent, so the car art reads as
-          background texture rather than competing with the label. */}
+      {/* Green brand tint anchored to the bottom, fading to transparent
+          toward the top, so the car art reads as background texture
+          rather than competing with the label. */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "linear-gradient(180deg, rgba(22,163,74,0.35) 0%, rgba(22,163,74,0.1) 45%, transparent 75%)",
+            "linear-gradient(0deg, rgba(22,163,74,0.4) 0%, rgba(22,163,74,0.12) 45%, transparent 75%)",
         }}
       />
       <span className="relative font-display text-sm font-medium text-white drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]">
