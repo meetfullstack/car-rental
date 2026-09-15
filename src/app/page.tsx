@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ShieldCheck, Clock, MapPinned, Star, ArrowRight } from "lucide-react";
-import { getFeaturedCars, categories } from "@/lib/cars";
+import { getFeaturedCars, getCars, categories } from "@/lib/cars";
 import CarCard from "@/components/CarCard";
 import SearchWidget from "@/components/SearchWidget";
 import Reveal from "@/components/Reveal";
@@ -53,6 +53,10 @@ const testimonials = [
 
 export default async function Home() {
   const featured = await getFeaturedCars();
+  const allCars = await getCars();
+  const categoryCars = Object.fromEntries(
+    categories.map((cat) => [cat, allCars.find((c) => c.category === cat)])
+  );
 
   return (
     <div>
@@ -136,7 +140,7 @@ export default async function Home() {
           <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
             {categories.map((category, i) => (
               <Reveal key={category} delay={i * 0.05}>
-                <CategoryCard category={category} />
+                <CategoryCard category={category} car={categoryCars[category]} />
               </Reveal>
             ))}
           </div>
