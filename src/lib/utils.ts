@@ -27,3 +27,27 @@ export function addDaysIso(iso: string, days: number): string {
 export function generateBookingId(): string {
   return `VEL-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
 }
+
+const SERVICE_FEE_RATE = 0.08;
+
+/**
+ * Single source of truth for the booking price breakdown — was
+ * previously duplicated identically in booking/page.tsx and
+ * checkout/page.tsx, which risked the two pages showing different
+ * totals for the same booking if one was ever edited without the other.
+ */
+export function calculatePricing(
+  pricePerDay: number,
+  days: number,
+  extraIds: string[],
+  extras: { id: string; pricePerDay: number }[]
+) {
+  const subtotal = days * pricePerDay;
+  const extrasTotal = extraIds.reduce((sum, id) => {
+    const extra = extras.find((e) => e.id === id);
+    return sum + (extra ? extra.pricePerDay * days : 0);
+  }, 0);
+  const serviceFee = Math.round((subtotal + extrasTotal) * SERVICE_FEE_RATE);
+  const total = subtotal + extrasTotal + serviceFee;
+  return { subtotal, extrasTotal, serviceFee, total };
+}

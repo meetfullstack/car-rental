@@ -1,21 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Lock } from "lucide-react";
 import { useBooking } from "@/lib/booking-context";
 import { extras as allExtras } from "@/lib/cars";
 import { useCar } from "@/lib/useCar";
-import { formatCurrency, daysBetween, generateBookingId } from "@/lib/utils";
+import { formatCurrency, daysBetween, generateBookingId, calculatePricing } from "@/lib/utils";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { draft, setDraft, addBooking, user, hydrated } = useBooking();
+  const { draft, setDraft, addBooking, user, hydrated, authLoading } = useBooking();
   const { car, loading } = useCar(draft.carId);
 
-  const [name, setName] = useState(user?.name || "");
-  const [email, setEmail] = useState(user?.email || "");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+
+  // user loads asynchronously (auth session check), so the initial
+  // useState above can't capture it — sync once it resolves, but only
+  // into still-empty fields so it never overwrites something typed.
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    if (!user) return;
+    setName((prev) => prev || user.name);
+    setEmail((prev) => prev || user.email);
+  }, [user]);
+  /* eslint-enable react-hooks/set-state-in-effect */
   const [phone, setPhone] = useState("");
   const [cardNumber, setCardNumber] = useState("");
   const [cardExpiry, setCardExpiry] = useState("");
@@ -38,7 +49,7 @@ export default function CheckoutPage() {
     );
   }
 
-  if (hydrated && !user) {
+  if (hydrated && !authLoading && !user) {
     return (
       <div className="mx-auto max-w-2xl px-6 py-24 text-center">
         <h1 className="font-display text-2xl font-semibold">Sign in to complete your booking</h1>
@@ -56,13 +67,12 @@ export default function CheckoutPage() {
   if (!car) return null;
 
   const days = Math.max(daysBetween(draft.pickupDate, draft.dropoffDate), 1);
-  const subtotal = days * car.pricePerDay;
-  const extrasTotal = draft.extras.reduce((sum, id) => {
-    const extra = allExtras.find((e) => e.id === id);
-    return sum + (extra ? extra.pricePerDay * days : 0);
-  }, 0);
-  const serviceFee = Math.round((subtotal + extrasTotal) * 0.08);
-  const total = subtotal + extrasTotal + serviceFee;
+  const { subtotal, extrasTotal, serviceFee, total } = calculatePricing(
+    car.pricePerDay,
+    days,
+    draft.extras,
+    allExtras
+  );
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

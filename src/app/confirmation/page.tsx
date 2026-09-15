@@ -12,9 +12,14 @@ import CarVisual from "@/components/CarVisual";
 function ConfirmationContent() {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
-  const { bookings } = useBooking();
+  const { bookings, authLoading } = useBooking();
   const booking = bookings.find((b) => b.id === id);
   const { car } = useCar(booking?.carId ?? null);
+
+  // Bookings only finish loading once the auth session check resolves —
+  // a direct visit/refresh on this page would otherwise show "not found"
+  // for a split second even for a booking that's really there.
+  if (authLoading) return null;
 
   if (!booking) {
     return (

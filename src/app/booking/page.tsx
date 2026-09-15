@@ -8,7 +8,7 @@ import { useBooking } from "@/lib/booking-context";
 import { extras as allExtras } from "@/lib/cars";
 import { useCar } from "@/lib/useCar";
 import CarVisual from "@/components/CarVisual";
-import { formatCurrency, daysBetween } from "@/lib/utils";
+import { formatCurrency, daysBetween, calculatePricing } from "@/lib/utils";
 
 export default function BookingPage() {
   const router = useRouter();
@@ -35,13 +35,12 @@ export default function BookingPage() {
   if (!car) return null;
 
   const days = Math.max(daysBetween(draft.pickupDate, draft.dropoffDate), 1);
-  const subtotal = days * car.pricePerDay;
-  const extrasTotal = selectedExtras.reduce((sum, id) => {
-    const extra = allExtras.find((e) => e.id === id);
-    return sum + (extra ? extra.pricePerDay * days : 0);
-  }, 0);
-  const serviceFee = Math.round((subtotal + extrasTotal) * 0.08);
-  const total = subtotal + extrasTotal + serviceFee;
+  const { subtotal, extrasTotal, serviceFee, total } = calculatePricing(
+    car.pricePerDay,
+    days,
+    selectedExtras,
+    allExtras
+  );
 
   function toggleExtra(id: string) {
     setSelectedExtras((prev) =>

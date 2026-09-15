@@ -10,7 +10,7 @@ import { formatCurrency } from "@/lib/utils";
 import CarVisual from "@/components/CarVisual";
 
 export default function DashboardPage() {
-  const { user, bookings, signOut } = useBooking();
+  const { user, bookings, signOut, authLoading } = useBooking();
   const [carsById, setCarsById] = useState<Record<string, Car>>({});
 
   useEffect(() => {
@@ -18,6 +18,8 @@ export default function DashboardPage() {
       setCarsById(Object.fromEntries(cars.map((c) => [c.id, c])));
     });
   }, []);
+
+  if (authLoading) return null;
 
   if (!user) {
     return (

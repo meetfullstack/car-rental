@@ -29,9 +29,12 @@ function mapCarRow(row: CarRow): Car {
   };
 }
 
-// Deduped with React's cache() so a page and its generateMetadata (which
-// run as separate calls per request in the App Router) share one fetch
-// instead of each hitting Supabase independently.
+// Both deduped with React's cache() so a page and its generateMetadata
+// (separate calls per request/build in the App Router) share one fetch
+// each instead of hitting Supabase independently. getCarById stays a
+// targeted single-row query rather than routing through getCars() — the
+// client-side useCar hook calls it too, and fetching all 12+ cars just
+// to find one would be wasteful there.
 export const getCars = cache(async (): Promise<Car[]> => {
   const { data, error } = await supabasePublic
     .from("cars")
@@ -41,10 +44,15 @@ export const getCars = cache(async (): Promise<Car[]> => {
   return data.map(mapCarRow);
 });
 
-export async function getCarById(id: string): Promise<Car | undefined> {
-  const cars = await getCars();
-  return cars.find((c) => c.id === id);
-}
+export const getCarById = cache(async (id: string): Promise<Car | undefined> => {
+  const { data, error } = await supabasePublic
+    .from("cars")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+  if (error || !data) return undefined;
+  return mapCarRow(data);
+});
 
 export async function getFeaturedCars(): Promise<Car[]> {
   const { data, error } = await supabasePublic

@@ -26,7 +26,11 @@ function LoginForm() {
       setSubmitting(false);
       return;
     }
-    router.push(searchParams.get("next") || "/dashboard");
+    const next = searchParams.get("next");
+    // Only ever redirect to a relative path — an unvalidated `next` param
+    // is an open-redirect vector (e.g. /login?next=https://evil.com would
+    // send a user off-site immediately after they authenticate).
+    router.push(next && next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard");
   }
 
   return (
